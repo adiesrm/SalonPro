@@ -10,6 +10,15 @@ import {
 } from 'react-native';
 
 import { Ionicons } from '@expo/vector-icons';
+import {
+  useNavigation,
+} from '@react-navigation/native';
+
+import {
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack';
+
+import { RootStackParamList } from '../navigation/AppNavigator';
 
 import { StatCard } from '../components/StatCard';
 import { QuickActionCard } from '../components/QuickActionCard';
@@ -25,6 +34,8 @@ import {
 } from '../services/dashboardService';
 
 export default function DashboardScreen() {
+  const navigation =
+  useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [stats, setStats] = useState<DashboardStats>({
     totalBookings: 0,
     upcomingAppointments: 0,
@@ -152,26 +163,33 @@ export default function DashboardScreen() {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.quickActionsScroll}
           >
-            <QuickActionCard 
-              title="Manage Bookings" 
-              description="View & edit schedule" 
-              icon="calendar" 
-            />
-            <QuickActionCard 
-              title="Manage Services" 
-              description="Update salon menu" 
-              icon="cut" 
-            />
-            <QuickActionCard 
-              title="Manage Staff" 
-              description="Rosters & performance" 
-              icon="briefcase" 
-            />
-            <QuickActionCard 
-              title="Manage Customers" 
-              description="Client history & notes" 
-              icon="person-add" 
-            />
+            <QuickActionCard
+  title="Manage Bookings"
+  description="View & edit schedule"
+  icon="calendar"
+  onPress={() => navigation.navigate('Bookings')}
+/>
+
+<QuickActionCard
+  title="Manage Services"
+  description="Update salon menu"
+  icon="cut"
+  onPress={() => navigation.navigate('Services')}
+/>
+
+<QuickActionCard
+  title="Manage Staff"
+  description="Rosters & performance"
+  icon="briefcase"
+  onPress={() => navigation.navigate('Staff')}
+/>
+
+<QuickActionCard
+  title="Manage Customers"
+  description="Client history & notes"
+  icon="person-add"
+  onPress={() => navigation.navigate('Customers')}
+/>
           </ScrollView>
         </View>
 

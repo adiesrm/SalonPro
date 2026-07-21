@@ -6,14 +6,29 @@ interface QuickActionCardProps {
   title: string;
   description: string;
   icon: keyof typeof Ionicons.glyphMap;
+  onPress?: () => void;
 }
 
-export const QuickActionCard: React.FC<QuickActionCardProps> = ({ title, description, icon }) => {
+export const QuickActionCard: React.FC<QuickActionCardProps> = ({
+  title,
+  description,
+  icon,
+  onPress,
+}) => {
   return (
-    <TouchableOpacity style={styles.card} activeOpacity={0.7}>
+    <TouchableOpacity
+      style={styles.card}
+      activeOpacity={0.7}
+      onPress={onPress}
+    >
       <View style={styles.iconContainer}>
-        <Ionicons name={icon} size={24} color="#111827" />
+        <Ionicons
+          name={icon}
+          size={24}
+          color="#111827"
+        />
       </View>
+
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.description}>{description}</Text>
     </TouchableOpacity>
@@ -30,6 +45,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#F3F4F6',
   },
+
   iconContainer: {
     width: 40,
     height: 40,
@@ -39,12 +55,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 12,
   },
+
   title: {
     fontSize: 15,
     fontWeight: '600',
     color: '#111827',
     marginBottom: 4,
   },
+
   description: {
     fontSize: 12,
     color: '#6B7280',
