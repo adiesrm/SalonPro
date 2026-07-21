@@ -6,6 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
   SafeAreaView,
+  ActivityIndicator,
 } from 'react-native';
 
 import { Ionicons } from '@expo/vector-icons';
@@ -13,7 +14,9 @@ import { Ionicons } from '@expo/vector-icons';
 import { StatCard } from '../components/StatCard';
 import { QuickActionCard } from '../components/QuickActionCard';
 import { BookingCard } from '../components/BookingCard';
+
 import { logout } from '../services/authService';
+
 import {
   getDashboardStats,
   getRecentBookings,
@@ -21,14 +24,18 @@ import {
   RecentBooking,
 } from '../services/dashboardService';
 
-export default function DashboardScreen()
- { const [stats, setStats] = useState<DashboardStats>({
-  totalBookings: 0,
-  upcomingAppointments: 0,
-  activeStaff: 0,
-  totalCustomers: 0,
-});
-const [recentBookings, setRecentBookings] = useState<RecentBooking[]>([]);
+export default function DashboardScreen() {
+  const [stats, setStats] = useState<DashboardStats>({
+    totalBookings: 0,
+    upcomingAppointments: 0,
+    activeStaff: 0,
+    totalCustomers: 0,
+  });
+
+  const [recentBookings, setRecentBookings] = useState<RecentBooking[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   const today = new Date().toLocaleDateString('en-US', {
     month: 'long',
     day: 'numeric',
@@ -38,26 +45,52 @@ const [recentBookings, setRecentBookings] = useState<RecentBooking[]>([]);
   async function handleLogout() {
     await logout();
   }
-  useEffect(() => {
-  async function loadDashboard() {
-    try {
-      const [dashboardStats, bookings] = await Promise.all([
-  getDashboardStats(),
-  getRecentBookings(),
-]);
 
-setStats(dashboardStats);
-setRecentBookings(bookings);
-    } catch (error) {
-      console.error(error);
+  useEffect(() => {
+    async function loadDashboard() {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const [dashboardStats, bookings] = await Promise.all([
+          getDashboardStats(),
+          getRecentBookings(),
+        ]);
+
+        setStats(dashboardStats);
+        setRecentBookings(bookings);
+      } catch (err) {
+        console.error(err);
+        setError('Failed to load dashboard.');
+      } finally {
+        setLoading(false);
+      }
     }
+
+    loadDashboard();
+  }, []);
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#3B82F6" />
+        <Text style={styles.loadingText}>Loading dashboard...</Text>
+      </SafeAreaView>
+    );
   }
 
-  loadDashboard();
-}, []);
-
-  
-  
+  if (error) {
+    return (
+      <SafeAreaView style={styles.loadingContainer}>
+        <Ionicons
+          name="warning-outline"
+          size={52}
+          color="#EF4444"
+        />
+        <Text style={styles.loadingText}>{error}</Text>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -146,16 +179,32 @@ setRecentBookings(bookings);
 <View style={styles.section}>
   <Text style={styles.sectionTitle}>Recent Bookings</Text>
 
-  {recentBookings.map((booking) => (
-    <BookingCard
-      key={booking.id}
-      name={booking.name}
-      service={booking.service}
-      time={booking.time}
-      status={booking.status}
-      avatarUrl={booking.avatarUrl}
-    />
-  ))}
+  {recentBookings.length === 0 ? (
+    <View style={styles.emptyContainer}>
+      <Ionicons
+        name="calendar-outline"
+        size={48}
+        color="#9CA3AF"
+      />
+      <Text style={styles.emptyTitle}>
+        No recent bookings
+      </Text>
+      <Text style={styles.emptySubtitle}>
+        New bookings will appear here.
+      </Text>
+    </View>
+  ) : (
+    recentBookings.map((booking) => (
+      <BookingCard
+        key={booking.id}
+        name={booking.name}
+        service={booking.service}
+        time={booking.time}
+        status={booking.status}
+        avatarUrl={booking.avatarUrl}
+      />
+    ))
+  )}
 </View>
 
         {/* 5. Bottom Section (Logout) */}
@@ -249,8 +298,44 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   logoutText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#DC2626',
-  },
+  fontSize: 16,
+  fontWeight: '600',
+  color: '#DC2626',
+},
+
+loadingContainer: {
+  flex: 1,
+  justifyContent: 'center',
+  alignItems: 'center',
+  backgroundColor: '#F8F9FA',
+},
+
+loadingText: {
+  marginTop: 16,
+  fontSize: 16,
+  fontWeight: '500',
+  color: '#6B7280',
+},
+
+emptyContainer: {
+  alignItems: 'center',
+  justifyContent: 'center',
+  paddingVertical: 40,
+  paddingHorizontal: 24,
+},
+
+emptyTitle: {
+  marginTop: 12,
+  fontSize: 18,
+  fontWeight: '700',
+  color: '#111827',
+},
+
+emptySubtitle: {
+  marginTop: 6,
+  fontSize: 14,
+  textAlign: 'center',
+  color: '#6B7280',
+},
+
 });
