@@ -1,10 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
-  Image,
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
@@ -15,8 +14,21 @@ import { StatCard } from '../components/StatCard';
 import { QuickActionCard } from '../components/QuickActionCard';
 import { BookingCard } from '../components/BookingCard';
 import { logout } from '../services/authService';
+import {
+  getDashboardStats,
+  getRecentBookings,
+  DashboardStats,
+  RecentBooking,
+} from '../services/dashboardService';
 
-export default function DashboardScreen() {
+export default function DashboardScreen()
+ { const [stats, setStats] = useState<DashboardStats>({
+  totalBookings: 0,
+  upcomingAppointments: 0,
+  activeStaff: 0,
+  totalCustomers: 0,
+});
+const [recentBookings, setRecentBookings] = useState<RecentBooking[]>([]);
   const today = new Date().toLocaleDateString('en-US', {
     month: 'long',
     day: 'numeric',
@@ -26,35 +38,26 @@ export default function DashboardScreen() {
   async function handleLogout() {
     await logout();
   }
+  useEffect(() => {
+  async function loadDashboard() {
+    try {
+      const [dashboardStats, bookings] = await Promise.all([
+  getDashboardStats(),
+  getRecentBookings(),
+]);
+
+setStats(dashboardStats);
+setRecentBookings(bookings);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  loadDashboard();
+}, []);
 
   
-  // Placeholder Data
-  const recentBookings = [
-    {
-      id: '1',
-      name: 'Sarah Johnson',
-      service: 'Haircut + Styling',
-      time: '10:30 AM',
-      status: 'Confirmed' as const,
-      avatarUrl: 'https://ui-avatars.com/api/?name=Sarah+Johnson&background=FCE7F3&color=DB2777',
-    },
-    {
-      id: '2',
-      name: 'Michael Brown',
-      service: 'Hair Color',
-      time: '11:15 AM',
-      status: 'Pending' as const,
-      avatarUrl: 'https://ui-avatars.com/api/?name=Michael+Brown&background=E0E7FF&color=4F46E5',
-    },
-    {
-      id: '3',
-      name: 'Priya Sharma',
-      service: 'Facial',
-      time: '1:00 PM',
-      status: 'Completed' as const,
-      avatarUrl: 'https://ui-avatars.com/api/?name=Priya+Sharma&background=DCFCE7&color=16A34A',
-    },
-  ];
+  
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -78,15 +81,33 @@ export default function DashboardScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Overview</Text>
           <View style={styles.grid}>
-            <StatCard title="Today's Bookings" value="24" icon="calendar-outline" color="#3B82F6" />
             <StatCard
+  title="Total Bookings"
+  value={stats.totalBookings.toString()}
+  icon="calendar-outline"
+  color="#3B82F6"
+/>
+
+<StatCard
   title="Upcoming Appointments"
-  value="18"
+  value={stats.upcomingAppointments.toString()}
   icon="time-outline"
   color="#10B981"
 />
-            <StatCard title="Active Staff" value="8" icon="people-outline" color="#8B5CF6" />
-            <StatCard title="Total Customers" value="1,432" icon="heart-outline" color="#F43F5E" />
+
+<StatCard
+  title="Active Staff"
+  value={stats.activeStaff.toString()}
+  icon="people-outline"
+  color="#8B5CF6"
+/>
+
+<StatCard
+  title="Total Customers"
+  value={stats.totalCustomers.toString()}
+  icon="heart-outline"
+  color="#F43F5E"
+/>
           </View>
         </View>
 
