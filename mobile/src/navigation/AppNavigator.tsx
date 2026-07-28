@@ -304,6 +304,8 @@ export default function AppNavigator() {
   {({ navigation, route }: DateTimeSelectionRouteProps) => (
     <DateTimeSelectionScreen
       onBack={() => navigation.goBack()}
+      service={route.params.service}
+      barber={route.params.barber}
       onConfirmBooking={(selectedDate, selectedTime) => {
         navigation.navigate("BookingConfirmation", {
           service: route.params.service,

@@ -9,22 +9,42 @@ import {
   ScrollView,
   Dimensions,
   Platform,
+  Alert,
 } from "react-native";
 import { ChevronLeft, Calendar, Clock, Sparkles, Check } from "lucide-react-native";
+import { auth } from "../config/firebase";
+import { createBooking, getUserProfile } from "../services/firestoreService";
 
 const { width } = Dimensions.get("window");
 
 interface DateTimeSelectionScreenProps {
   onBack?: () => void;
   onConfirmBooking?: (selectedDate: string, selectedTime: string) => void;
+  service: {
+    name: string;
+    category: string;
+    price: string;
+    duration: string;
+    description: string;
+    whatsIncluded: string[];
+  };
+  barber: {
+    id: string;
+    name: string;
+    role: string;
+    rating: string;
+  };
 }
 
 export default function DateTimeSelectionScreen({
   onBack,
   onConfirmBooking,
+  service,
+  barber,
 }: DateTimeSelectionScreenProps) {
   const [selectedDate, setSelectedDate] = useState<string>("Today");
   const [selectedTime, setSelectedTime] = useState<string>("10:00 AM");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const dates = ["Today", "Tomorrow", "Friday"];
   const times = ["10:00 AM", "11:00 AM", "12:00 PM", "2:00 PM", "4:00 PM"];
@@ -37,11 +57,56 @@ export default function DateTimeSelectionScreen({
     }
   };
 
-  const handleConfirmPress = () => {
-    if (onConfirmBooking) {
-      onConfirmBooking(selectedDate, selectedTime);
-    } else {
-      console.log("Booking Confirmed for:", selectedDate, "at", selectedTime);
+  const handleConfirmPress = async () => {
+    if (isSubmitting) {
+      return;
+    }
+
+    const user = auth.currentUser;
+
+    if (!user) {
+      Alert.alert("Error", "Please log in again.");
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+
+      const profile = await getUserProfile(user.uid);
+
+      if (!profile?.fullName || !profile.email || !profile.phone) {
+        Alert.alert(
+          "Profile Incomplete",
+          "Please update your profile with your name, email, and phone number before booking."
+        );
+        return;
+      }
+
+      await createBooking({
+        userId: user.uid,
+        customerName: profile.fullName,
+        email: profile.email,
+        phone: profile.phone,
+        serviceId: service.name,
+        serviceName: service.name,
+        barberId: barber.id,
+        barberName: barber.name,
+        date: selectedDate,
+        time: selectedTime,
+        duration: Number(service.duration.replace(/[^\d]/g, "")),
+        price: Number(service.price.replace(/[^\d]/g, "")),
+        status: "pending",
+      });
+
+      onConfirmBooking?.(selectedDate, selectedTime);
+    } catch (error) {
+      console.error(error);
+      Alert.alert(
+        "Booking Failed",
+        "Unable to save your booking. Please try again."
+      );
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -184,6 +249,7 @@ export default function DateTimeSelectionScreen({
           style={styles.confirmButton}
           onPress={handleConfirmPress}
           activeOpacity={0.8}
+          disabled={isSubmitting}
         >
           <Text style={styles.confirmButtonText}>CONFIRM BOOKING</Text>
         </TouchableOpacity>

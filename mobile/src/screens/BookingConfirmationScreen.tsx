@@ -8,12 +8,8 @@ import {
   TouchableOpacity,
   Dimensions,
   Platform,
-
-  Alert,
 } from "react-native";
 import { Check, Sparkles, Calendar, Clock, User, Scissors, Crown } from "lucide-react-native";
-import { auth } from "../config/firebase";
-import { createBooking } from "../services/firestoreService";
 
 const { width } = Dimensions.get("window");
 
@@ -53,52 +49,8 @@ export default function BookingConfirmationScreen({
   time: bookingDetails?.time ?? "11:00 AM",
 };
 
-const handleReturnHomePress = async () => {
-  try {
-    const user = auth.currentUser;
-
-    if (!user) {
-      Alert.alert("Error", "Please log in again.");
-      return;
-    }
-
-    if (!bookingDetails) {
-      Alert.alert("Error", "Booking details not found.");
-      return;
-    }
-
-    await createBooking({
-      userId: user.uid,
-      customerName: user.displayName ?? "Customer",
-
-      serviceId: bookingDetails.service.name,
-      serviceName: bookingDetails.service.name,
-
-      barberId: bookingDetails.barber.id,
-      barberName: bookingDetails.barber.name,
-
-      date: bookingDetails.date,
-      time: bookingDetails.time,
-
-      duration: Number(
-        bookingDetails.service.duration.replace(/[^\d]/g, "")
-      ),
-
-      price: Number(
-        bookingDetails.service.price.replace(/[^\d]/g, "")
-      ),
-
-      status: "pending",
-    });
-
-    onReturnHome?.();
-  } catch (error) {
-    console.error(error);
-    Alert.alert(
-      "Booking Failed",
-      "Unable to save your booking. Please try again."
-    );
-  }
+const handleReturnHomePress = () => {
+  onReturnHome?.();
 };
 
   return (
