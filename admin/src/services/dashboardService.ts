@@ -5,6 +5,7 @@ import {
   query,
   orderBy,
   limit,
+  where,
 } from 'firebase/firestore';
 
 import { db } from '../config/firebase';
@@ -32,7 +33,7 @@ export async function getDashboardStats(): Promise<DashboardStats> {
     );
 
     const staffSnapshot = await getCountFromServer(
-      collection(db, 'barbers')
+      query(collection(db, 'barbers'), where('isActive', '==', true))
     );
 
     const customersSnapshot = await getCountFromServer(
