@@ -16,6 +16,17 @@ interface CreateCustomerData {
   phone: string;
   email: string;
 }
+export interface Customer {
+  id: string;
+  fullName: string;
+  phone: string;
+  email: string;
+  totalBookings: number;
+  isActive: boolean;
+  createdAt?: unknown;
+  updatedAt?: unknown;
+  lastVisit?: unknown;
+}
 
 /**
  * Creates a new customer
@@ -63,6 +74,22 @@ export async function getCustomerByPhone(phone: string) {
     };
   } catch (error) {
     console.error('Error finding customer:', error);
+    throw error;
+  }
+}
+/**
+ * Returns all customers
+ */
+export async function getCustomers(): Promise<Customer[]> {
+  try {
+    const snapshot = await getDocs(customersRef);
+
+    return snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...(doc.data() as Omit<Customer, 'id'>),
+    }));
+  } catch (error) {
+    console.error('Error loading customers:', error);
     throw error;
   }
 }
