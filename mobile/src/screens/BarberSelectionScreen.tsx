@@ -11,8 +11,11 @@ import {
   Platform,
 } from "react-native";
 import { ChevronLeft, Star, Crown, User, Check } from "lucide-react-native";
+import Animated, { FadeInUp } from "react-native-reanimated";
 
+import LuxuryBackground from "../components/LuxuryBackground";
 import { getBarbers } from "../services/firestoreService";
+import { colors, theme } from "../theme/theme";
 
 const { width } = Dimensions.get("window");
 
@@ -80,14 +83,9 @@ const loadBarbers = async () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
 
-      {/* Decorative Luxury Background Halos */}
-      <View style={styles.backgroundDecoratorContainer} pointerEvents="none">
-        <View style={styles.haloOuter} />
-        <View style={styles.goldLineLeft} />
-        <View style={styles.goldLineRight} />
-      </View>
+      <LuxuryBackground />
 
       {/* Header Bar */}
       <View style={styles.header}>
@@ -96,7 +94,7 @@ const loadBarbers = async () => {
           onPress={handleBackPress}
           activeOpacity={0.7}
         >
-          <ChevronLeft size={22} color="#FFFFFF" strokeWidth={1.5} />
+          <ChevronLeft size={22} color={colors.cocoa} strokeWidth={1.5} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Select Barber</Text>
         <View style={styles.headerPlaceholder} />
@@ -106,21 +104,27 @@ const loadBarbers = async () => {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.titleSection}>
+        <Animated.View
+          entering={FadeInUp.duration(650)}
+          style={styles.titleSection}
+        >
           <Text style={styles.subtitle}>PRESTIGE STYLISTS</Text>
           <Text style={styles.mainTitle}>Choose Your Barber</Text>
           <Text style={styles.description}>
             Select one of our certified master artisans to craft your personal look.
           </Text>
-        </View>
+        </Animated.View>
 
         {/* Barber Cards list */}
         <View style={styles.barberList}>
           {barbers.map((barber) => {
             const isSelected = selectedBarberId === barber.id;
             return (
-              <TouchableOpacity
+              <Animated.View
+                entering={FadeInUp.delay(80).duration(600)}
                 key={barber.id}
+              >
+              <TouchableOpacity
                 style={[
                   styles.barberCard,
                   isSelected && styles.barberCardSelected,
@@ -132,9 +136,9 @@ const loadBarbers = async () => {
                   <View style={styles.avatarBorder}>
                     <View style={styles.avatarPlaceholder}>
                       {barber.name === "Arjun" ? (
-                        <Crown size={20} color="#D4AF37" strokeWidth={1.5} />
+                        <Crown size={20} color={colors.gold} strokeWidth={1.5} />
                       ) : (
-                        <User size={20} color="#D4AF37" strokeWidth={1.5} />
+                        <User size={20} color={colors.gold} strokeWidth={1.5} />
                       )}
                     </View>
                   </View>
@@ -143,7 +147,7 @@ const loadBarbers = async () => {
                     <View style={styles.nameRow}>
                       <Text style={styles.barberName}>{barber.name}</Text>
                       <View style={styles.ratingRow}>
-                        <Star size={12} color="#D4AF37" fill="#D4AF37" />
+                        <Star size={12} color={colors.gold} fill={colors.gold} />
                         <Text style={styles.ratingText}>{barber.rating}</Text>
                       </View>
                     </View>
@@ -159,7 +163,7 @@ const loadBarbers = async () => {
                   >
                     {isSelected && (
                       <View style={styles.radioInner}>
-                        <Check size={10} color="#050505" strokeWidth={3} />
+                        <Check size={10} color={colors.cream} strokeWidth={3} />
                       </View>
                     )}
                   </View>
@@ -176,6 +180,7 @@ const loadBarbers = async () => {
                   </View>
                 )}
               </TouchableOpacity>
+              </Animated.View>
             );
           })}
         </View>
@@ -198,7 +203,7 @@ const loadBarbers = async () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#050505",
+    backgroundColor: colors.blush,
   },
   backgroundDecoratorContainer: {
     ...StyleSheet.absoluteFillObject,
@@ -239,21 +244,21 @@ const styles = StyleSheet.create({
     height: Platform.OS === "android" ? 88 : 64,
     zIndex: 10,
     borderBottomWidth: 1,
-    borderColor: "rgba(39, 39, 42, 0.5)",
-    backgroundColor: "rgba(5, 5, 5, 0.9)",
+    borderColor: colors.whiteGlass,
+    backgroundColor: colors.ivoryGlass,
   },
   backButton: {
     width: 40,
     height: 40,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: "#27272A",
-    backgroundColor: "rgba(24, 24, 27, 0.5)",
+    borderColor: colors.whiteGlass,
+    backgroundColor: "rgba(255, 255, 255, 0.38)",
     alignItems: "center",
     justifyContent: "center",
   },
   headerTitle: {
-    color: "#FFFFFF",
+    color: colors.ink,
     fontSize: 16,
     fontWeight: "600",
     letterSpacing: 1,
@@ -272,7 +277,7 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   subtitle: {
-    color: "#D4AF37",
+    color: colors.gold,
     fontSize: 11,
     fontWeight: "600",
     letterSpacing: 2,
@@ -280,14 +285,14 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   mainTitle: {
-    color: "#FFFFFF",
+    color: colors.ink,
     fontSize: 28,
     fontWeight: "300",
     letterSpacing: -0.5,
-    fontFamily: Platform.OS === "ios" ? "Georgia" : "serif",
+    fontFamily: theme.typography.displayFont,
   },
   description: {
-    color: "#71717A",
+    color: colors.muted,
     fontSize: 13,
     lineHeight: 18,
     marginTop: 8,
@@ -301,14 +306,14 @@ const styles = StyleSheet.create({
     width: "100%",
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: "#27272A",
-    backgroundColor: "rgba(24, 24, 27, 0.5)",
+    borderColor: colors.whiteGlass,
+    backgroundColor: colors.ivoryGlass,
     padding: 20,
     position: "relative",
   },
   barberCardSelected: {
-    borderColor: "rgba(212, 175, 55, 0.4)",
-    backgroundColor: "rgba(24, 24, 27, 0.8)",
+    borderColor: colors.gold,
+    backgroundColor: colors.ivoryGlassStrong,
   },
   cardHeader: {
     flexDirection: "row",
@@ -320,7 +325,7 @@ const styles = StyleSheet.create({
     height: 52,
     borderRadius: 26,
     borderWidth: 1,
-    borderColor: "rgba(212, 175, 55, 0.2)",
+    borderColor: colors.line,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -328,7 +333,7 @@ const styles = StyleSheet.create({
     width: 46,
     height: 46,
     borderRadius: 23,
-    backgroundColor: "rgba(212, 175, 55, 0.04)",
+    backgroundColor: "rgba(255, 255, 255, 0.4)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -342,7 +347,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   barberName: {
-    color: "#FFFFFF",
+    color: colors.ink,
     fontSize: 17,
     fontWeight: "600",
     letterSpacing: 0.2,
@@ -351,23 +356,23 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    backgroundColor: "rgba(212, 175, 55, 0.08)",
+    backgroundColor: "rgba(205, 163, 90, 0.16)",
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 8,
   },
   ratingText: {
-    color: "#D4AF37",
+    color: colors.cocoa,
     fontSize: 10,
     fontWeight: "700",
   },
   barberRole: {
-    color: "#A1A1AA",
+    color: colors.cocoaSoft,
     fontSize: 12,
     marginTop: 2,
   },
   barberDescription: {
-    color: "#71717A",
+    color: colors.muted,
     fontSize: 12,
     lineHeight: 18,
     marginLeft: 68,
@@ -377,13 +382,13 @@ const styles = StyleSheet.create({
     height: 20,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: "#52525B",
+    borderColor: colors.lineStrong,
     alignItems: "center",
     justifyContent: "center",
   },
   radioOuterSelected: {
-    borderColor: "#D4AF37",
-    backgroundColor: "#D4AF37",
+    borderColor: colors.cocoa,
+    backgroundColor: colors.cocoa,
   },
   radioInner: {
     alignItems: "center",
@@ -402,7 +407,7 @@ const styles = StyleSheet.create({
     height: 10,
     borderTopWidth: 1.5,
     borderLeftWidth: 1.5,
-    borderColor: "#D4AF37",
+    borderColor: colors.gold,
   },
   goldCornerTopRight: {
     position: "absolute",
@@ -412,7 +417,7 @@ const styles = StyleSheet.create({
     height: 10,
     borderTopWidth: 1.5,
     borderRightWidth: 1.5,
-    borderColor: "#D4AF37",
+    borderColor: colors.gold,
   },
   goldCornerBottomLeft: {
     position: "absolute",
@@ -422,7 +427,7 @@ const styles = StyleSheet.create({
     height: 10,
     borderBottomWidth: 1.5,
     borderLeftWidth: 1.5,
-    borderColor: "#D4AF37",
+    borderColor: colors.gold,
   },
   goldCornerBottomRight: {
     position: "absolute",
@@ -432,16 +437,16 @@ const styles = StyleSheet.create({
     height: 10,
     borderBottomWidth: 1.5,
     borderRightWidth: 1.5,
-    borderColor: "#D4AF37",
+    borderColor: colors.gold,
   },
   bottomBar: {
     position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: "rgba(5, 5, 5, 0.95)",
+    backgroundColor: colors.ivoryGlassStrong,
     borderTopWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.08)",
+    borderColor: colors.whiteGlass,
     paddingHorizontal: 24,
     paddingTop: 16,
     paddingBottom: Platform.OS === "ios" ? 34 : 16,
@@ -451,17 +456,17 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 56,
     borderRadius: 28,
-    backgroundColor: "#D4AF37",
+    backgroundColor: colors.cocoa,
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#D4AF37",
+    shadowColor: colors.cocoa,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 8,
     elevation: 4,
   },
   continueButtonText: {
-    color: "#050505",
+    color: colors.cream,
     fontSize: 16,
     fontWeight: "700",
     letterSpacing: 1.5,

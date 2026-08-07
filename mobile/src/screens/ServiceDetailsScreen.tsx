@@ -19,6 +19,10 @@ import {
   Crown,
   Scissors,
 } from "lucide-react-native";
+import Animated, { FadeInUp } from "react-native-reanimated";
+
+import LuxuryBackground from "../components/LuxuryBackground";
+import { colors, theme } from "../theme/theme";
 
 const { width, height } = Dimensions.get("window");
 
@@ -73,14 +77,9 @@ export default function ServiceDetailsScreen({
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
 
-      {/* Luxury Background Accents */}
-      <View style={styles.backgroundDecoratorContainer} pointerEvents="none">
-        <View style={styles.haloOuter} />
-        <View style={styles.goldLineLeft} />
-        <View style={styles.goldLineRight} />
-      </View>
+      <LuxuryBackground />
 
       {/* Header Bar */}
       <View style={styles.header}>
@@ -89,7 +88,7 @@ export default function ServiceDetailsScreen({
           onPress={handleBackPress}
           activeOpacity={0.7}
         >
-          <ChevronLeft size={22} color="#FFFFFF" strokeWidth={1.5} />
+          <ChevronLeft size={22} color={colors.cocoa} strokeWidth={1.5} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Service Details</Text>
         <View style={styles.headerPlaceholder} />
@@ -100,9 +99,12 @@ export default function ServiceDetailsScreen({
         showsVerticalScrollIndicator={false}
       >
         {/* Large Service Image Placeholder */}
-        <View style={styles.imagePlaceholderContainer}>
+        <Animated.View
+          entering={FadeInUp.duration(650)}
+          style={styles.imagePlaceholderContainer}
+        >
           <View style={styles.imageInnerBorder}>
-            <Crown size={48} color="#D4AF37" strokeWidth={1.2} style={styles.imageIcon} />
+            <Crown size={48} color={colors.gold} strokeWidth={1.2} style={styles.imageIcon} />
             <Text style={styles.imagePlaceholderText}>SALON PRO EXPO</Text>
             <Text style={styles.imagePlaceholderSubtext}>L'EXPERIENCE PRESTIGE</Text>
             <View style={styles.goldCornerTopLeft} />
@@ -110,13 +112,16 @@ export default function ServiceDetailsScreen({
             <View style={styles.goldCornerBottomLeft} />
             <View style={styles.goldCornerBottomRight} />
           </View>
-        </View>
+        </Animated.View>
 
         {/* Info Card Container */}
-        <View style={styles.detailsContainer}>
+        <Animated.View
+          entering={FadeInUp.delay(120).duration(650)}
+          style={styles.detailsContainer}
+        >
           {/* Category Tag */}
           <View style={styles.categoryBadge}>
-            <Sparkles size={12} color="#D4AF37" style={styles.badgeIcon} />
+            <Sparkles size={12} color={colors.gold} style={styles.badgeIcon} />
             <Text style={styles.categoryText}>{serviceDetails.category}</Text>
           </View>
 
@@ -133,7 +138,7 @@ export default function ServiceDetailsScreen({
             <View style={styles.durationContainer}>
               <Text style={styles.durationLabel}>DURATION</Text>
               <View style={styles.durationValueRow}>
-                <Clock size={16} color="#D4AF37" style={styles.durationIcon} />
+                <Clock size={16} color={colors.gold} style={styles.durationIcon} />
                 <Text style={styles.durationValue}>{serviceDetails.duration}</Text>
               </View>
             </View>
@@ -149,7 +154,7 @@ export default function ServiceDetailsScreen({
             {serviceDetails.whatsIncluded.map((item, index) => (
               <View key={index} style={styles.bulletRow}>
                 <View style={styles.bulletCheckCircle}>
-                  <Check size={12} color="#050505" strokeWidth={3} />
+                  <Check size={12} color={colors.cream} strokeWidth={3} />
                 </View>
                 <Text style={styles.bulletText}>{item}</Text>
               </View>
@@ -158,12 +163,12 @@ export default function ServiceDetailsScreen({
 
           {/* Quality Assurance Badge */}
           <View style={styles.assuranceCard}>
-            <ShieldCheck size={18} color="#D4AF37" strokeWidth={1.5} />
+            <ShieldCheck size={18} color={colors.gold} strokeWidth={1.5} />
             <Text style={styles.assuranceText}>
               All rituals are performed using premium organic elixirs by master artisans.
             </Text>
           </View>
-        </View>
+        </Animated.View>
       </ScrollView>
 
       {/* Book Now Floating Bottom Button Container */}
@@ -174,7 +179,7 @@ export default function ServiceDetailsScreen({
           activeOpacity={0.8}
         >
           <Text style={styles.bookButtonText}>BOOK NOW</Text>
-          <Scissors size={18} color="#050505" strokeWidth={2} style={styles.bookIcon} />
+          <Scissors size={18} color={colors.cream} strokeWidth={2} style={styles.bookIcon} />
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -184,7 +189,7 @@ export default function ServiceDetailsScreen({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#050505",
+    backgroundColor: colors.blush,
   },
   backgroundDecoratorContainer: {
     ...StyleSheet.absoluteFillObject,
@@ -225,21 +230,21 @@ const styles = StyleSheet.create({
     height: Platform.OS === "android" ? 88 : 64,
     zIndex: 10,
     borderBottomWidth: 1,
-    borderColor: "rgba(39, 39, 42, 0.5)",
-    backgroundColor: "rgba(5, 5, 5, 0.9)",
+    borderColor: colors.whiteGlass,
+    backgroundColor: colors.ivoryGlass,
   },
   backButton: {
     width: 40,
     height: 40,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: "#27272A",
-    backgroundColor: "rgba(24, 24, 27, 0.5)",
+    borderColor: colors.whiteGlass,
+    backgroundColor: "rgba(255, 255, 255, 0.38)",
     alignItems: "center",
     justifyContent: "center",
   },
   headerTitle: {
-    color: "#FFFFFF",
+    color: colors.ink,
     fontSize: 16,
     fontWeight: "600",
     letterSpacing: 1,
@@ -256,9 +261,9 @@ const styles = StyleSheet.create({
     marginTop: 24,
     height: 240,
     borderRadius: 20,
-    backgroundColor: "rgba(24, 24, 27, 0.7)",
+    backgroundColor: colors.ivoryGlass,
     borderWidth: 1,
-    borderColor: "rgba(212, 175, 55, 0.15)",
+    borderColor: colors.whiteGlass,
     padding: 16,
     zIndex: 10,
     justifyContent: "center",
@@ -268,7 +273,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: "100%",
     borderWidth: 1,
-    borderColor: "rgba(212, 175, 55, 0.05)",
+    borderColor: colors.line,
     borderRadius: 14,
     justifyContent: "center",
     alignItems: "center",
@@ -278,14 +283,14 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   imagePlaceholderText: {
-    color: "#FFFFFF",
+    color: colors.ink,
     fontSize: 18,
     fontWeight: "300",
     letterSpacing: 3,
-    fontFamily: Platform.OS === "ios" ? "Georgia" : "serif",
+    fontFamily: theme.typography.displayFont,
   },
   imagePlaceholderSubtext: {
-    color: "#D4AF37",
+    color: colors.gold,
     fontSize: 10,
     fontWeight: "600",
     letterSpacing: 2,
@@ -299,7 +304,7 @@ const styles = StyleSheet.create({
     height: 12,
     borderTopWidth: 2,
     borderLeftWidth: 2,
-    borderColor: "#D4AF37",
+    borderColor: colors.gold,
   },
   goldCornerTopRight: {
     position: "absolute",
@@ -309,7 +314,7 @@ const styles = StyleSheet.create({
     height: 12,
     borderTopWidth: 2,
     borderRightWidth: 2,
-    borderColor: "#D4AF37",
+    borderColor: colors.gold,
   },
   goldCornerBottomLeft: {
     position: "absolute",
@@ -319,7 +324,7 @@ const styles = StyleSheet.create({
     height: 12,
     borderBottomWidth: 2,
     borderLeftWidth: 2,
-    borderColor: "#D4AF37",
+    borderColor: colors.gold,
   },
   goldCornerBottomRight: {
     position: "absolute",
@@ -329,7 +334,7 @@ const styles = StyleSheet.create({
     height: 12,
     borderBottomWidth: 2,
     borderRightWidth: 2,
-    borderColor: "#D4AF37",
+    borderColor: colors.gold,
   },
   detailsContainer: {
     paddingHorizontal: 24,
@@ -340,9 +345,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     alignSelf: "flex-start",
-    backgroundColor: "rgba(212, 175, 55, 0.08)",
+    backgroundColor: "rgba(205, 163, 90, 0.16)",
     borderWidth: 1,
-    borderColor: "rgba(212, 175, 55, 0.25)",
+    borderColor: "rgba(205, 163, 90, 0.28)",
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 20,
@@ -352,26 +357,26 @@ const styles = StyleSheet.create({
     marginRight: 6,
   },
   categoryText: {
-    color: "#D4AF37",
+    color: colors.cocoa,
     fontSize: 11,
     fontWeight: "600",
     letterSpacing: 1,
     textTransform: "uppercase",
   },
   serviceTitle: {
-    color: "#FFFFFF",
+    color: colors.ink,
     fontSize: 28,
     fontWeight: "300",
     letterSpacing: -0.5,
-    fontFamily: Platform.OS === "ios" ? "Georgia" : "serif",
+    fontFamily: theme.typography.displayFont,
     lineHeight: 36,
   },
   metaRow: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(24, 24, 27, 0.4)",
+    backgroundColor: "rgba(255, 255, 255, 0.34)",
     borderWidth: 1,
-    borderColor: "#27272A",
+    borderColor: colors.line,
     borderRadius: 16,
     paddingVertical: 16,
     paddingHorizontal: 20,
@@ -382,14 +387,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   priceLabel: {
-    color: "#71717A",
+    color: colors.cocoaMuted,
     fontSize: 10,
     fontWeight: "600",
     letterSpacing: 1,
     marginBottom: 4,
   },
   priceValue: {
-    color: "#FFFFFF",
+    color: colors.ink,
     fontSize: 22,
     fontWeight: "700",
     letterSpacing: 0.5,
@@ -397,14 +402,14 @@ const styles = StyleSheet.create({
   dividerLine: {
     width: 1,
     height: 40,
-    backgroundColor: "#27272A",
+    backgroundColor: colors.line,
     marginHorizontal: 16,
   },
   durationContainer: {
     flex: 1,
   },
   durationLabel: {
-    color: "#71717A",
+    color: colors.cocoaMuted,
     fontSize: 10,
     fontWeight: "600",
     letterSpacing: 1,
@@ -418,19 +423,19 @@ const styles = StyleSheet.create({
     marginRight: 6,
   },
   durationValue: {
-    color: "#FFFFFF",
+    color: colors.ink,
     fontSize: 18,
     fontWeight: "600",
   },
   descriptionHeader: {
-    color: "#A1A1AA",
+    color: colors.cocoaSoft,
     fontSize: 12,
     fontWeight: "600",
     letterSpacing: 1.5,
     marginBottom: 10,
   },
   descriptionText: {
-    color: "#D4D4D8",
+    color: colors.muted,
     fontSize: 14,
     lineHeight: 22,
     fontWeight: "400",
@@ -438,7 +443,7 @@ const styles = StyleSheet.create({
     marginBottom: 28,
   },
   whatsIncludedHeader: {
-    color: "#A1A1AA",
+    color: colors.cocoaSoft,
     fontSize: 12,
     fontWeight: "600",
     letterSpacing: 1.5,
@@ -456,7 +461,7 @@ const styles = StyleSheet.create({
     width: 18,
     height: 18,
     borderRadius: 9,
-    backgroundColor: "#D4AF37",
+    backgroundColor: colors.cocoa,
     alignItems: "center",
     justifyContent: "center",
     marginRight: 12,
@@ -464,7 +469,7 @@ const styles = StyleSheet.create({
   },
   bulletText: {
     flex: 1,
-    color: "#E4E4E7",
+    color: colors.ink,
     fontSize: 14,
     lineHeight: 20,
   },
@@ -473,15 +478,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 12,
     borderWidth: 1,
-    borderColor: "rgba(212, 175, 55, 0.12)",
-    backgroundColor: "rgba(212, 175, 55, 0.02)",
+    borderColor: colors.line,
+    backgroundColor: "rgba(255, 255, 255, 0.28)",
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
   },
   assuranceText: {
     flex: 1,
-    color: "#A1A1AA",
+    color: colors.muted,
     fontSize: 12,
     lineHeight: 18,
   },
@@ -490,9 +495,9 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: "rgba(5, 5, 5, 0.95)",
+    backgroundColor: colors.ivoryGlassStrong,
     borderTopWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.08)",
+    borderColor: colors.whiteGlass,
     paddingHorizontal: 24,
     paddingTop: 16,
     paddingBottom: Platform.OS === "ios" ? 34 : 16,
@@ -502,19 +507,19 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 56,
     borderRadius: 28,
-    backgroundColor: "#D4AF37",
+    backgroundColor: colors.cocoa,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
-    shadowColor: "#D4AF37",
+    shadowColor: colors.cocoa,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 8,
     elevation: 4,
   },
   bookButtonText: {
-    color: "#050505",
+    color: colors.cream,
     fontSize: 16,
     fontWeight: "700",
     letterSpacing: 1.5,

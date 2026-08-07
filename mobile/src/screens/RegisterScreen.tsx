@@ -12,7 +12,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  TouchableWithoutFeedback,
+  
   View,
 } from 'react-native';
 import {
@@ -25,9 +25,12 @@ import {
   Phone,
   User,
 } from 'lucide-react-native';
+import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 
+import LuxuryBackground from '../components/LuxuryBackground';
 import { register } from '../services/authService';
 import { createUserProfile } from '../services/firestoreService';
+import { colors, theme } from '../theme/theme';
 
 const { width, height } = Dimensions.get('window');
 
@@ -143,49 +146,50 @@ export default function RegisterScreen({
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
 
-      <View style={styles.backgroundDecoratorContainer} pointerEvents="none">
-        <View style={styles.haloOuter} />
-        <View style={styles.haloInner} />
-        <View style={styles.goldLineLeft} />
-        <View style={styles.goldLineRight} />
-      </View>
+      <LuxuryBackground />
 
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardView}
       >
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        
           <ScrollView
             contentContainerStyle={styles.scrollContent}
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
           >
-            <View style={styles.header}>
+            <Animated.View
+              entering={FadeInDown.duration(600)}
+              style={styles.header}
+            >
               <TouchableOpacity
                 onPress={handleBack}
                 activeOpacity={0.7}
                 style={styles.backButton}
                 accessibilityLabel="Back"
               >
-                <ArrowLeft size={22} color="#FFFFFF" strokeWidth={1.5} />
+                <ArrowLeft size={22} color={colors.cocoa} strokeWidth={1.5} />
               </TouchableOpacity>
 
               <View style={styles.miniBranding}>
-                <Crown size={16} color="#D4AF37" strokeWidth={1.5} />
+                <Crown size={16} color={colors.gold} strokeWidth={1.5} />
                 <Text style={styles.miniBrandText}>SALONPRO</Text>
               </View>
 
               <View style={styles.backButtonSpacer} />
-            </View>
+            </Animated.View>
 
-            <View style={styles.titleContainer}>
+            <Animated.View
+              entering={FadeInUp.delay(100).duration(650)}
+              style={styles.titleContainer}
+            >
               <Text style={styles.heading}>Create Your Account</Text>
               <Text style={styles.subtitle}>
                 Create your premium SalonPro account.
               </Text>
-            </View>
+            </Animated.View>
 
             <View style={styles.formContainer}>
               <View style={styles.inputWrapper}>
@@ -198,7 +202,7 @@ export default function RegisterScreen({
                 >
                   <User
                     size={18}
-                    color={isFullNameFocused ? '#D4AF37' : '#52525B'}
+                    color={isFullNameFocused ? colors.gold : colors.cocoaMuted}
                     style={styles.inputIcon}
                   />
                   <TextInput
@@ -224,7 +228,7 @@ export default function RegisterScreen({
                 >
                   <Phone
                     size={18}
-                    color={isPhoneFocused ? '#D4AF37' : '#52525B'}
+                    color={isPhoneFocused ? colors.gold : colors.cocoaMuted}
                     style={styles.inputIcon}
                   />
                   <TextInput
@@ -252,7 +256,7 @@ export default function RegisterScreen({
                 >
                   <Mail
                     size={18}
-                    color={isEmailFocused ? '#D4AF37' : '#52525B'}
+                    color={isEmailFocused ? colors.gold : colors.cocoaMuted}
                     style={styles.inputIcon}
                   />
                   <TextInput
@@ -280,7 +284,7 @@ export default function RegisterScreen({
                 >
                   <Lock
                     size={18}
-                    color={isPasswordFocused ? '#D4AF37' : '#52525B'}
+                    color={isPasswordFocused ? colors.gold : colors.cocoaMuted}
                     style={styles.inputIcon}
                   />
                   <TextInput
@@ -304,9 +308,9 @@ export default function RegisterScreen({
                     style={styles.visibilityButton}
                   >
                     {isPasswordVisible ? (
-                      <EyeOff size={18} color="#A1A1AA" />
+                      <EyeOff size={18} color={colors.cocoaMuted} />
                     ) : (
-                      <Eye size={18} color="#52525B" />
+                      <Eye size={18} color={colors.cocoaMuted} />
                     )}
                   </TouchableOpacity>
                 </View>
@@ -322,7 +326,7 @@ export default function RegisterScreen({
                 >
                   <Lock
                     size={18}
-                    color={isConfirmPasswordFocused ? '#D4AF37' : '#52525B'}
+                    color={isConfirmPasswordFocused ? colors.gold : colors.cocoaMuted}
                     style={styles.inputIcon}
                   />
                   <TextInput
@@ -348,9 +352,9 @@ export default function RegisterScreen({
                     style={styles.visibilityButton}
                   >
                     {isConfirmPasswordVisible ? (
-                      <EyeOff size={18} color="#A1A1AA" />
+                      <EyeOff size={18} color={colors.cocoaMuted} />
                     ) : (
-                      <Eye size={18} color="#52525B" />
+                      <Eye size={18} color={colors.cocoaMuted} />
                     )}
                   </TouchableOpacity>
                 </View>
@@ -378,14 +382,13 @@ export default function RegisterScreen({
               </TouchableOpacity>
             </View>
           </ScrollView>
-        </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#050505' },
+  container: { flex: 1, backgroundColor: colors.blush },
   keyboardView: { flex: 1 },
   scrollContent: {
     flexGrow: 1,
@@ -407,25 +410,25 @@ const styles = StyleSheet.create({
   goldLineLeft: { position: 'absolute', width: 1, height: '100%', backgroundColor: 'rgba(212, 175, 55, 0.03)', left: 40 },
   goldLineRight: { position: 'absolute', width: 1, height: '100%', backgroundColor: 'rgba(212, 175, 55, 0.03)', right: 40 },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginTop: 8 },
-  backButton: { width: 44, height: 44, borderRadius: 22, borderWidth: 1, borderColor: 'rgba(255, 255, 255, 0.1)', backgroundColor: 'rgba(255, 255, 255, 0.03)', alignItems: 'center', justifyContent: 'center' },
+  backButton: { width: 44, height: 44, borderRadius: 22, borderWidth: 1, borderColor: colors.whiteGlass, backgroundColor: colors.ivoryGlass, alignItems: 'center', justifyContent: 'center' },
   miniBranding: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  miniBrandText: { color: '#FFFFFF', fontSize: 11, fontWeight: '700', letterSpacing: 2 },
+  miniBrandText: { color: colors.ink, fontSize: 11, fontWeight: '700', letterSpacing: 2 },
   backButtonSpacer: { width: 44 },
-  titleContainer: { marginTop: 40, marginBottom: 32, width: '100%' },
-  heading: { color: '#FFFFFF', fontSize: 32, fontWeight: '300', letterSpacing: -0.5, marginBottom: 10, fontFamily: Platform.OS === 'ios' ? 'Georgia' : 'serif', fontStyle: 'italic' },
-  subtitle: { color: '#A1A1AA', fontSize: 14, lineHeight: 20, fontWeight: '400', letterSpacing: 0.2 },
-  formContainer: { width: '100%', gap: 20, marginBottom: 40 },
+  titleContainer: { marginTop: 40, marginBottom: 32, width: '100%', paddingHorizontal: 22, paddingVertical: 28, borderRadius: 34, backgroundColor: colors.ivoryGlass, borderWidth: 1, borderColor: colors.whiteGlass, ...theme.shadows.glass },
+  heading: { color: colors.ink, fontSize: 32, fontWeight: '300', letterSpacing: -0.5, marginBottom: 10, fontFamily: theme.typography.displayFont, fontStyle: 'italic' },
+  subtitle: { color: colors.muted, fontSize: 14, lineHeight: 20, fontWeight: '400', letterSpacing: 0.2 },
+  formContainer: { width: '100%', gap: 20, marginBottom: 40, padding: 18, borderRadius: 30, backgroundColor: colors.ivoryGlass, borderWidth: 1, borderColor: colors.whiteGlass, ...theme.shadows.glass },
   inputWrapper: { width: '100%', gap: 8 },
-  inputLabel: { color: '#A1A1AA', fontSize: 12, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 1.5 },
-  inputContainer: { width: '100%', height: 56, borderRadius: 12, borderWidth: 1, borderColor: '#27272A', backgroundColor: 'rgba(24, 24, 27, 0.7)', flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 },
-  inputContainerFocused: { borderColor: '#D4AF37', backgroundColor: 'rgba(212, 175, 55, 0.02)', shadowColor: '#D4AF37', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 6 },
+  inputLabel: { color: colors.cocoaSoft, fontSize: 12, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 1.5 },
+  inputContainer: { width: '100%', height: 56, borderRadius: 12, borderWidth: 1, borderColor: colors.line, backgroundColor: 'rgba(255, 255, 255, 0.36)', flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 },
+  inputContainerFocused: { borderColor: colors.gold, backgroundColor: 'rgba(255, 250, 244, 0.72)', shadowColor: colors.gold, shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.12, shadowRadius: 6 },
   inputIcon: { marginRight: 12 },
-  textInput: { flex: 1, height: '100%', color: '#FFFFFF', fontSize: 14, letterSpacing: 0.3 },
+  textInput: { flex: 1, height: '100%', color: colors.ink, fontSize: 14, letterSpacing: 0.3 },
   visibilityButton: { padding: 4 },
   actionContainer: { width: '100%', alignItems: 'center', gap: 16, marginTop: 'auto' },
-  primaryButton: { width: '100%', height: 56, backgroundColor: '#D4AF37', borderRadius: 28, alignItems: 'center', justifyContent: 'center', shadowColor: '#D4AF37', shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.35, shadowRadius: 16, elevation: 6 },
-  primaryButtonText: { color: '#050505', fontSize: 16, fontWeight: '600', letterSpacing: 1 },
+  primaryButton: { width: '100%', height: 56, backgroundColor: colors.cocoa, borderRadius: 28, alignItems: 'center', justifyContent: 'center', shadowColor: colors.cocoa, shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.28, shadowRadius: 16, elevation: 6 },
+  primaryButtonText: { color: colors.cream, fontSize: 16, fontWeight: '600', letterSpacing: 1 },
   secondaryButton: { paddingVertical: 12 },
-  secondaryButtonText: { color: '#A1A1AA', fontSize: 13, fontWeight: '400', letterSpacing: 0.3 },
-  signUpHighlight: { color: '#D4AF37', fontWeight: '600' },
+  secondaryButtonText: { color: colors.cocoaSoft, fontSize: 13, fontWeight: '400', letterSpacing: 0.3 },
+  signUpHighlight: { color: colors.ink, fontWeight: '600' },
 });

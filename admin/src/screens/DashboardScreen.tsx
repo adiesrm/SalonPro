@@ -170,6 +170,7 @@ export default function DashboardScreen() {
   onPress={() => navigation.navigate('Bookings')}
 />
 
+
 <QuickActionCard
   title="Manage Services"
   description="Update salon menu"

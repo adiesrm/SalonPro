@@ -10,6 +10,7 @@ import {
 import LoginScreen from '../screens/LoginScreen';
 import DashboardScreen from '../screens/DashboardScreen';
 import BookingsScreen from '../screens/BookingsScreen';
+
 import ServicesScreen from '../screens/ServicesScreen';
 import StaffScreen from '../screens/StaffScreen';
 import CustomersScreen from '../screens/CustomersScreen';
@@ -19,6 +20,7 @@ export type RootStackParamList = {
   Login: undefined;
   Dashboard: undefined;
   Bookings: undefined;
+  Schedule: undefined;
   Services: undefined;
   Staff: undefined;
   Customers: undefined;

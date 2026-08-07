@@ -12,6 +12,20 @@ import BookingConfirmationScreen from "../screens/BookingConfirmationScreen";
 import MyBookingsScreen from "../screens/MyBookingsScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 
+type ServiceDetailsData = {
+  name: string;
+  category: string;
+  price: string;
+  duration: string;
+  description: string;
+  whatsIncluded: string[];
+};
+
+type ServiceSelection = ServiceDetailsData & {
+  id?: string;
+  rating?: string;
+};
+
 export type RootStackParamList = {
   Welcome: undefined;
   Login: undefined;
@@ -20,35 +34,14 @@ export type RootStackParamList = {
   MyBookings: undefined;
   Profile:undefined;
   ServiceDetails: {
-    service?: {
-      name: string;
-      category: string;
-      price: string;
-      duration: string;
-      description: string;
-      whatsIncluded: string[];
-    };
+    service?: ServiceDetailsData;
   } | undefined;
   BarberSelection: {
-  service: {
-    name: string;
-    category: string;
-    price: string;
-    duration: string;
-    description: string;
-    whatsIncluded: string[];
-  };
+  service: ServiceDetailsData;
 };
 
 DateTimeSelection: {
-  service: {
-    name: string;
-    category: string;
-    price: string;
-    duration: string;
-    description: string;
-    whatsIncluded: string[];
-  };
+  service: ServiceDetailsData;
   barber: {
     id: string;
     name: string;
@@ -58,14 +51,7 @@ DateTimeSelection: {
 };
 
 BookingConfirmation: {
-service: {
-  name: string;
-  category: string;
-  price: string;
-  duration: string;
-  description: string;
-  whatsIncluded: string[];
-};
+service: ServiceDetailsData;
   barber: {
     id: string;
     name: string;
@@ -209,6 +195,29 @@ const getServiceDetails = (serviceName: string) => {
   }
 };
 
+const normalizeServiceDetails = (
+  service: ServiceSelection | string
+): ServiceDetailsData | undefined => {
+  if (typeof service === "string") {
+    return getServiceDetails(service);
+  }
+
+  if (!service.name) {
+    return undefined;
+  }
+
+  return {
+    name: service.name,
+    category: service.category,
+    price: service.price,
+    duration: service.duration,
+    description: service.description,
+    whatsIncluded: Array.isArray(service.whatsIncluded)
+      ? service.whatsIncluded
+      : [],
+  };
+};
+
 export default function AppNavigator() {
   return (
     <Stack.Navigator
@@ -255,20 +264,28 @@ export default function AppNavigator() {
       </Stack.Screen>
       <Stack.Screen name="Home">
         {({ navigation }: ScreenProps) => (
-          <HomeScreen
-            onNavigateToBookings={() => {
-  navigation.navigate("MyBookings");
-}}
-            onNavigateToProfile={() => {
-  navigation.navigate("Profile");
-}}
-            onSelectService={(serviceName) => {
-              console.log("Selected service:", serviceName);
-              const details = getServiceDetails(serviceName);
-              navigation.navigate("ServiceDetails", details ? { service: details } : undefined);
-            }}
-          />
+         <HomeScreen
+  onNavigateToBookings={() => {
+    navigation.navigate("MyBookings");
+  }}
+  onNavigateToProfile={() => {
+    navigation.navigate("Profile");
+  }}
+  onSelectService={(service) => {
+    console.log("NAV RECEIVED", service);
+
+    const details = normalizeServiceDetails(service);
+
+    console.log("NORMALIZED", details);
+
+    navigation.navigate(
+      "ServiceDetails",
+      details ? { service: details } : undefined
+    );
+  }}
+/>
         )}
+
       </Stack.Screen>
       <Stack.Screen name="ServiceDetails">
         {({ navigation, route }: ServiceDetailsRouteProps) => (

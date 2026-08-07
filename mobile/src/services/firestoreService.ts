@@ -69,7 +69,18 @@ export async function getUserProfile(uid: string): Promise<UserProfile | null> {
     phone: String(data.phone ?? '').trim(),
   };
 }
-export async function getServices() {
+export interface Service {
+  id: string;
+  name: string;
+  category: string;
+  price: string;
+  duration: string;
+  rating?: string;
+  description: string;
+  whatsIncluded: string[];
+  isActive: boolean;
+}
+export async function getServices(): Promise<Service[]> {
   const servicesRef = collection(db, "services");
 
   const q = query(
@@ -81,7 +92,7 @@ export async function getServices() {
 
   return snapshot.docs.map((doc) => ({
     id: doc.id,
-    ...doc.data(),
+    ...(doc.data() as Omit<Service, "id">),
   }));
 }
 export async function getBarbers() {

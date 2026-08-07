@@ -12,8 +12,11 @@ import {
   Alert,
 } from "react-native";
 import { ChevronLeft, Calendar, Clock, Sparkles, Check } from "lucide-react-native";
+import Animated, { FadeInUp } from "react-native-reanimated";
+import LuxuryBackground from "../components/LuxuryBackground";
 import { auth } from "../config/firebase";
 import { createBooking, getUserProfile } from "../services/firestoreService";
+import { colors, theme } from "../theme/theme";
 
 const { width } = Dimensions.get("window");
 
@@ -112,14 +115,9 @@ export default function DateTimeSelectionScreen({
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
 
-      {/* Decorative Luxury Background Halos */}
-      <View style={styles.backgroundDecoratorContainer} pointerEvents="none">
-        <View style={styles.haloOuter} />
-        <View style={styles.goldLineLeft} />
-        <View style={styles.goldLineRight} />
-      </View>
+      <LuxuryBackground />
 
       {/* Header Bar */}
       <View style={styles.header}>
@@ -128,7 +126,7 @@ export default function DateTimeSelectionScreen({
           onPress={handleBackPress}
           activeOpacity={0.7}
         >
-          <ChevronLeft size={22} color="#FFFFFF" strokeWidth={1.5} />
+          <ChevronLeft size={22} color={colors.cocoa} strokeWidth={1.5} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Select Schedule</Text>
         <View style={styles.headerPlaceholder} />
@@ -139,18 +137,21 @@ export default function DateTimeSelectionScreen({
         showsVerticalScrollIndicator={false}
       >
         {/* Title Section */}
-        <View style={styles.titleSection}>
+        <Animated.View
+          entering={FadeInUp.duration(650)}
+          style={styles.titleSection}
+        >
           <Text style={styles.subtitle}>RESERVE SESSION</Text>
           <Text style={styles.mainTitle}>Select Date & Time</Text>
           <Text style={styles.description}>
             Choose your preferred date and time slot for your premium grooming ritual.
           </Text>
-        </View>
+        </Animated.View>
 
         {/* Date Selection Section */}
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Select Date</Text>
-          <Calendar size={14} color="#D4AF37" strokeWidth={1.5} />
+          <Calendar size={14} color={colors.gold} strokeWidth={1.5} />
         </View>
 
         <View style={styles.datesRow}>
@@ -168,7 +169,7 @@ export default function DateTimeSelectionScreen({
               >
                 {isSelected && (
                   <View style={styles.selectedTick}>
-                    <Check size={8} color="#050505" strokeWidth={3} />
+                    <Check size={8} color={colors.cream} strokeWidth={3} />
                   </View>
                 )}
                 <Text
@@ -197,7 +198,7 @@ export default function DateTimeSelectionScreen({
         {/* Time Selection Section */}
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Available Slots</Text>
-          <Clock size={14} color="#D4AF37" strokeWidth={1.5} />
+          <Clock size={14} color={colors.gold} strokeWidth={1.5} />
         </View>
 
         <View style={styles.timeGrid}>
@@ -236,7 +237,7 @@ export default function DateTimeSelectionScreen({
 
         {/* Premium Note */}
         <View style={styles.noteCard}>
-          <Sparkles size={16} color="#D4AF37" strokeWidth={1.5} />
+          <Sparkles size={16} color={colors.gold} strokeWidth={1.5} />
           <Text style={styles.noteText}>
             Please arrive 10 minutes prior to your scheduled session to enjoy our signature complimentary beverage lounge.
           </Text>
@@ -261,7 +262,7 @@ export default function DateTimeSelectionScreen({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#050505",
+    backgroundColor: colors.blush,
   },
   backgroundDecoratorContainer: {
     ...StyleSheet.absoluteFillObject,
@@ -302,21 +303,21 @@ const styles = StyleSheet.create({
     height: Platform.OS === "android" ? 88 : 64,
     zIndex: 10,
     borderBottomWidth: 1,
-    borderColor: "rgba(39, 39, 42, 0.5)",
-    backgroundColor: "rgba(5, 5, 5, 0.9)",
+    borderColor: colors.whiteGlass,
+    backgroundColor: colors.ivoryGlass,
   },
   backButton: {
     width: 40,
     height: 40,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: "#27272A",
-    backgroundColor: "rgba(24, 24, 27, 0.5)",
+    borderColor: colors.whiteGlass,
+    backgroundColor: "rgba(255, 255, 255, 0.38)",
     alignItems: "center",
     justifyContent: "center",
   },
   headerTitle: {
-    color: "#FFFFFF",
+    color: colors.ink,
     fontSize: 16,
     fontWeight: "600",
     letterSpacing: 1,
@@ -335,7 +336,7 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   subtitle: {
-    color: "#D4AF37",
+    color: colors.gold,
     fontSize: 11,
     fontWeight: "600",
     letterSpacing: 2,
@@ -343,14 +344,14 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   mainTitle: {
-    color: "#FFFFFF",
+    color: colors.ink,
     fontSize: 28,
     fontWeight: "300",
     letterSpacing: -0.5,
-    fontFamily: Platform.OS === "ios" ? "Georgia" : "serif",
+    fontFamily: theme.typography.displayFont,
   },
   description: {
-    color: "#71717A",
+    color: colors.muted,
     fontSize: 13,
     lineHeight: 18,
     marginTop: 8,
@@ -365,7 +366,7 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   sectionTitle: {
-    color: "#FFFFFF",
+    color: colors.ink,
     fontSize: 14,
     fontWeight: "600",
     letterSpacing: 1,
@@ -382,15 +383,15 @@ const styles = StyleSheet.create({
     height: 90,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: "#27272A",
-    backgroundColor: "rgba(24, 24, 27, 0.5)",
+    borderColor: colors.whiteGlass,
+    backgroundColor: colors.ivoryGlass,
     alignItems: "center",
     justifyContent: "center",
     position: "relative",
   },
   dateCardSelected: {
-    borderColor: "rgba(212, 175, 55, 0.4)",
-    backgroundColor: "rgba(24, 24, 27, 0.8)",
+    borderColor: colors.gold,
+    backgroundColor: colors.ivoryGlassStrong,
   },
   selectedTick: {
     position: "absolute",
@@ -399,20 +400,20 @@ const styles = StyleSheet.create({
     width: 14,
     height: 14,
     borderRadius: 7,
-    backgroundColor: "#D4AF37",
+    backgroundColor: colors.cocoa,
     alignItems: "center",
     justifyContent: "center",
   },
   dateText: {
-    color: "#A1A1AA",
+    color: colors.cocoaSoft,
     fontSize: 15,
     fontWeight: "600",
   },
   dateTextSelected: {
-    color: "#FFFFFF",
+    color: colors.ink,
   },
   dateLabel: {
-    color: "#52525B",
+    color: colors.cocoaMuted,
     fontSize: 10,
     marginTop: 4,
     fontWeight: "500",
@@ -430,23 +431,23 @@ const styles = StyleSheet.create({
     height: 52,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "#27272A",
-    backgroundColor: "rgba(24, 24, 27, 0.5)",
+    borderColor: colors.whiteGlass,
+    backgroundColor: colors.ivoryGlass,
     alignItems: "center",
     justifyContent: "center",
     position: "relative",
   },
   timeCardSelected: {
-    borderColor: "rgba(212, 175, 55, 0.4)",
-    backgroundColor: "rgba(24, 24, 27, 0.8)",
+    borderColor: colors.gold,
+    backgroundColor: colors.ivoryGlassStrong,
   },
   timeText: {
-    color: "#A1A1AA",
+    color: colors.cocoaSoft,
     fontSize: 13,
     fontWeight: "600",
   },
   timeTextSelected: {
-    color: "#D4AF37",
+    color: colors.cocoa,
   },
   selectedIndicatorLine: {
     ...StyleSheet.absoluteFillObject,
@@ -461,7 +462,7 @@ const styles = StyleSheet.create({
     height: 8,
     borderTopWidth: 1.5,
     borderLeftWidth: 1.5,
-    borderColor: "#D4AF37",
+    borderColor: colors.gold,
   },
   goldCornerTopRight: {
     position: "absolute",
@@ -471,7 +472,7 @@ const styles = StyleSheet.create({
     height: 8,
     borderTopWidth: 1.5,
     borderRightWidth: 1.5,
-    borderColor: "#D4AF37",
+    borderColor: colors.gold,
   },
   goldCornerBottomLeft: {
     position: "absolute",
@@ -481,7 +482,7 @@ const styles = StyleSheet.create({
     height: 8,
     borderBottomWidth: 1.5,
     borderLeftWidth: 1.5,
-    borderColor: "#D4AF37",
+    borderColor: colors.gold,
   },
   goldCornerBottomRight: {
     position: "absolute",
@@ -491,15 +492,15 @@ const styles = StyleSheet.create({
     height: 8,
     borderBottomWidth: 1.5,
     borderRightWidth: 1.5,
-    borderColor: "#D4AF37",
+    borderColor: colors.gold,
   },
   noteCard: {
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
     borderWidth: 1,
-    borderColor: "rgba(212, 175, 55, 0.12)",
-    backgroundColor: "rgba(212, 175, 55, 0.02)",
+    borderColor: colors.whiteGlass,
+    backgroundColor: colors.ivoryGlass,
     borderRadius: 12,
     padding: 16,
     marginHorizontal: 24,
@@ -508,7 +509,7 @@ const styles = StyleSheet.create({
   },
   noteText: {
     flex: 1,
-    color: "#A1A1AA",
+    color: colors.muted,
     fontSize: 12,
     lineHeight: 18,
   },
@@ -517,9 +518,9 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: "rgba(5, 5, 5, 0.95)",
+    backgroundColor: colors.ivoryGlassStrong,
     borderTopWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.08)",
+    borderColor: colors.whiteGlass,
     paddingHorizontal: 24,
     paddingTop: 16,
     paddingBottom: Platform.OS === "ios" ? 34 : 16,
@@ -529,17 +530,17 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 56,
     borderRadius: 28,
-    backgroundColor: "#D4AF37",
+    backgroundColor: colors.cocoa,
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#D4AF37",
+    shadowColor: colors.cocoa,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 8,
     elevation: 4,
   },
   confirmButtonText: {
-    color: "#050505",
+    color: colors.cream,
     fontSize: 16,
     fontWeight: "700",
     letterSpacing: 1.5,

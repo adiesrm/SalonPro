@@ -10,6 +10,10 @@ import {
   Platform,
 } from "react-native";
 import { Check, Sparkles, Calendar, Clock, User, Scissors, Crown } from "lucide-react-native";
+import Animated, { FadeInUp, ZoomIn } from "react-native-reanimated";
+
+import LuxuryBackground from "../components/LuxuryBackground";
+import { colors, theme } from "../theme/theme";
 
 const { width } = Dimensions.get("window");
 
@@ -55,30 +59,28 @@ const handleReturnHomePress = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
 
-      {/* Luxury Background Accents */}
-      <View style={styles.backgroundDecoratorContainer} pointerEvents="none">
-        <View style={styles.haloOuter} />
-        <View style={styles.goldLineLeft} />
-        <View style={styles.goldLineRight} />
-      </View>
+      <LuxuryBackground />
 
       <View style={styles.content}>
         {/* Success Icon */}
-        <View style={styles.successIconWrapper}>
+        <Animated.View
+          entering={ZoomIn.duration(650)}
+          style={styles.successIconWrapper}
+        >
           <View style={styles.successIconOuterCircle}>
             <View style={styles.successIconInnerCircle}>
-              <Check size={38} color="#10B981" strokeWidth={3} />
+              <Check size={38} color={colors.success} strokeWidth={3} />
             </View>
           </View>
           <View style={styles.sparkleLeft}>
-            <Sparkles size={16} color="#D4AF37" />
+            <Sparkles size={16} color={colors.gold} />
           </View>
           <View style={styles.sparkleRight}>
-            <Sparkles size={16} color="#D4AF37" />
+            <Sparkles size={16} color={colors.gold} />
           </View>
-        </View>
+        </Animated.View>
 
         {/* Success Header */}
         <Text style={styles.subtitle}>RESERVATION SECURED</Text>
@@ -90,7 +92,10 @@ const handleReturnHomePress = () => {
         </Text>
 
         {/* Receipt / Details Card */}
-        <View style={styles.receiptCard}>
+        <Animated.View
+          entering={FadeInUp.delay(140).duration(650)}
+          style={styles.receiptCard}
+        >
           <View style={styles.goldCornerTopLeft} />
           <View style={styles.goldCornerTopRight} />
           <View style={styles.goldCornerBottomLeft} />
@@ -101,7 +106,7 @@ const handleReturnHomePress = () => {
           {/* Row: Service */}
           <View style={styles.receiptRow}>
             <View style={styles.labelContainer}>
-              <Scissors size={14} color="#71717A" style={styles.rowIcon} />
+            <Scissors size={14} color={colors.cocoaMuted} style={styles.rowIcon} />
               <Text style={styles.rowLabel}>SERVICE</Text>
             </View>
             <Text style={styles.rowValue}>{details.serviceName}</Text>
@@ -112,7 +117,7 @@ const handleReturnHomePress = () => {
           {/* Row: Barber */}
           <View style={styles.receiptRow}>
             <View style={styles.labelContainer}>
-              <User size={14} color="#71717A" style={styles.rowIcon} />
+              <User size={14} color={colors.cocoaMuted} style={styles.rowIcon} />
               <Text style={styles.rowLabel}>BARBER</Text>
             </View>
             <Text style={styles.rowValue}>{details.barberName}</Text>
@@ -123,7 +128,7 @@ const handleReturnHomePress = () => {
           {/* Row: Date */}
           <View style={styles.receiptRow}>
             <View style={styles.labelContainer}>
-              <Calendar size={14} color="#71717A" style={styles.rowIcon} />
+              <Calendar size={14} color={colors.cocoaMuted} style={styles.rowIcon} />
               <Text style={styles.rowLabel}>DATE</Text>
             </View>
             <Text style={styles.rowValue}>{details.date}</Text>
@@ -134,16 +139,16 @@ const handleReturnHomePress = () => {
           {/* Row: Time */}
           <View style={styles.receiptRow}>
             <View style={styles.labelContainer}>
-              <Clock size={14} color="#71717A" style={styles.rowIcon} />
+              <Clock size={14} color={colors.cocoaMuted} style={styles.rowIcon} />
               <Text style={styles.rowLabel}>TIME</Text>
             </View>
             <Text style={styles.rowValue}>{details.time}</Text>
           </View>
-        </View>
+        </Animated.View>
 
         {/* Salon Assurance */}
         <View style={styles.assuranceNote}>
-          <Crown size={14} color="#D4AF37" strokeWidth={1.5} />
+          <Crown size={14} color={colors.gold} strokeWidth={1.5} />
           <Text style={styles.assuranceText}>
             A confirmation notification has been sent to your registered profile.
           </Text>
@@ -167,7 +172,7 @@ const handleReturnHomePress = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#050505",
+    backgroundColor: colors.blush,
   },
   backgroundDecoratorContainer: {
     ...StyleSheet.absoluteFillObject,
@@ -216,20 +221,20 @@ const styles = StyleSheet.create({
     height: 88,
     borderRadius: 44,
     borderWidth: 1,
-    borderColor: "rgba(16, 185, 129, 0.2)",
+    borderColor: "rgba(47, 143, 103, 0.28)",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(16, 185, 129, 0.03)",
+    backgroundColor: "rgba(255, 250, 244, 0.55)",
   },
   successIconInnerCircle: {
     width: 72,
     height: 72,
     borderRadius: 36,
     borderWidth: 2,
-    borderColor: "#10B981",
+    borderColor: colors.success,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(16, 185, 129, 0.08)",
+    backgroundColor: colors.cream,
   },
   sparkleLeft: {
     position: "absolute",
@@ -242,7 +247,7 @@ const styles = StyleSheet.create({
     right: -8,
   },
   subtitle: {
-    color: "#D4AF37",
+    color: colors.gold,
     fontSize: 11,
     fontWeight: "600",
     letterSpacing: 2,
@@ -250,16 +255,16 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   mainTitle: {
-    color: "#FFFFFF",
+    color: colors.ink,
     fontSize: 32,
     fontWeight: "300",
     letterSpacing: -0.5,
-    fontFamily: Platform.OS === "ios" ? "Georgia" : "serif",
+    fontFamily: theme.typography.displayFont,
     textAlign: "center",
     marginBottom: 16,
   },
   thankYouText: {
-    color: "#71717A",
+    color: colors.muted,
     fontSize: 13,
     lineHeight: 20,
     textAlign: "center",
@@ -270,15 +275,15 @@ const styles = StyleSheet.create({
     width: "100%",
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: "rgba(212, 175, 55, 0.15)",
-    backgroundColor: "rgba(24, 24, 27, 0.7)",
+    borderColor: colors.whiteGlass,
+    backgroundColor: colors.ivoryGlassStrong,
     paddingVertical: 24,
     paddingHorizontal: 24,
     position: "relative",
     marginBottom: 24,
   },
   receiptHeader: {
-    color: "#A1A1AA",
+    color: colors.cocoaSoft,
     fontSize: 11,
     fontWeight: "600",
     letterSpacing: 1.5,
@@ -300,19 +305,19 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   rowLabel: {
-    color: "#71717A",
+    color: colors.cocoaMuted,
     fontSize: 11,
     fontWeight: "600",
     letterSpacing: 0.5,
   },
   rowValue: {
-    color: "#FFFFFF",
+    color: colors.ink,
     fontSize: 14,
     fontWeight: "600",
   },
   rowDivider: {
     height: 1,
-    backgroundColor: "rgba(39, 39, 42, 0.4)",
+    backgroundColor: colors.line,
     width: "100%",
   },
   assuranceNote: {
@@ -322,7 +327,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   assuranceText: {
-    color: "#52525B",
+    color: colors.muted,
     fontSize: 11,
   },
   goldCornerTopLeft: {
@@ -333,7 +338,7 @@ const styles = StyleSheet.create({
     height: 12,
     borderTopWidth: 2,
     borderLeftWidth: 2,
-    borderColor: "#D4AF37",
+    borderColor: colors.gold,
   },
   goldCornerTopRight: {
     position: "absolute",
@@ -343,7 +348,7 @@ const styles = StyleSheet.create({
     height: 12,
     borderTopWidth: 2,
     borderRightWidth: 2,
-    borderColor: "#D4AF37",
+    borderColor: colors.gold,
   },
   goldCornerBottomLeft: {
     position: "absolute",
@@ -353,7 +358,7 @@ const styles = StyleSheet.create({
     height: 12,
     borderBottomWidth: 2,
     borderLeftWidth: 2,
-    borderColor: "#D4AF37",
+    borderColor: colors.gold,
   },
   goldCornerBottomRight: {
     position: "absolute",
@@ -363,16 +368,16 @@ const styles = StyleSheet.create({
     height: 12,
     borderBottomWidth: 2,
     borderRightWidth: 2,
-    borderColor: "#D4AF37",
+    borderColor: colors.gold,
   },
   bottomBar: {
     position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: "rgba(5, 5, 5, 0.95)",
+    backgroundColor: colors.ivoryGlassStrong,
     borderTopWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.08)",
+    borderColor: colors.whiteGlass,
     paddingHorizontal: 24,
     paddingTop: 16,
     paddingBottom: Platform.OS === "ios" ? 34 : 16,
@@ -382,17 +387,17 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 56,
     borderRadius: 28,
-    backgroundColor: "#D4AF37",
+    backgroundColor: colors.cocoa,
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#D4AF37",
+    shadowColor: colors.cocoa,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 8,
     elevation: 4,
   },
   homeButtonText: {
-    color: "#050505",
+    color: colors.cream,
     fontSize: 16,
     fontWeight: "700",
     letterSpacing: 1.5,

@@ -15,7 +15,9 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
 import type { RootStackParamList } from "../navigation/AppNavigator";
 import { ArrowLeft } from "lucide-react-native";
+import Animated, { FadeInUp } from "react-native-reanimated";
 import { signOut } from "firebase/auth";
+import LuxuryBackground from "../components/LuxuryBackground";
 import { auth } from "../config/firebase"; // adjust path to your firebase config
 type ProfileScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -143,7 +145,8 @@ export default function ProfileScreen() {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <StatusBar barStyle="light-content" backgroundColor={COLORS.bg} />
+      <StatusBar barStyle="dark-content" backgroundColor={COLORS.bg} />
+      <LuxuryBackground />
 
       {/* Full-screen loading overlay while signing out */}
       {signingOut && (
@@ -174,7 +177,10 @@ export default function ProfileScreen() {
         </View>
 
         {/* ── Profile Card ──────────────────────────────── */}
-        <View style={styles.card}>
+        <Animated.View
+          entering={FadeInUp.duration(650)}
+          style={styles.card}
+        >
           {/* Decorative top gradient band */}
           <View style={styles.cardBand} />
 
@@ -219,11 +225,14 @@ export default function ProfileScreen() {
               </View>
             </View>
           </View>
-        </View>
+        </Animated.View>
 
         {/* ── Settings Section ──────────────────────────── */}
         <Text style={styles.sectionHeading}>Legal & Info</Text>
-        <View style={styles.settingsCard}>
+        <Animated.View
+          entering={FadeInUp.delay(140).duration(650)}
+          style={styles.settingsCard}
+        >
           <SettingsRow
             icon="🔒"
             label="Privacy Policy"
@@ -240,7 +249,7 @@ export default function ProfileScreen() {
             onPress={handleAbout}
             isLast
           />
-        </View>
+        </Animated.View>
 
         {/* ── Log Out Button ────────────────────────────── */}
         <TouchableOpacity
@@ -270,19 +279,19 @@ export default function ProfileScreen() {
 // ─── Design Tokens ────────────────────────────────────────────────────────────
 
 const COLORS = {
-  bg: "#0F0F14",
-  surface: "#1A1A24",
-  surfaceHigh: "#22222F",
-  border: "#2E2E3D",
-  accent: "#C8A96E",          // warm champagne gold
-  accentDeep: "#A0814B",
-  accentGlow: "rgba(200,169,110,0.18)",
-  text: "#F2EFE9",
-  textMuted: "#8A8499",
-  textDim: "#5C5870",
-  danger: "#E05252",
-  dangerDeep: "#B83C3C",
-  dangerGlow: "rgba(224,82,82,0.15)",
+  bg: "#F2A5A6",
+  surface: "rgba(255, 250, 244, 0.9)",
+  surfaceHigh: "rgba(255, 255, 255, 0.5)",
+  border: "rgba(91, 56, 55, 0.16)",
+  accent: "#CDA35A",
+  accentDeep: "#5B3837",
+  accentGlow: "rgba(205, 163, 90, 0.18)",
+  text: "#2B1B1B",
+  textMuted: "#7B6A66",
+  textDim: "#9B7B73",
+  danger: "#B84A4A",
+  dangerDeep: "#8F3333",
+  dangerGlow: "rgba(184,74,74,0.15)",
   white: "#FFFFFF",
   overlay: "rgba(0,0,0,0.65)",
 };

@@ -10,6 +10,10 @@ import {
   Platform,
 } from "react-native";
 import { Scissors, Sparkles, ChevronRight, Crown } from "lucide-react-native";
+import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
+
+import LuxuryBackground from "../components/LuxuryBackground";
+import { colors, theme } from "../theme/theme";
 
 const { width, height } = Dimensions.get("window");
 
@@ -37,31 +41,31 @@ export default function WelcomeScreen({ onGetStarted, onSignIn }: WelcomeScreenP
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
 
-      {/* Decorative Luxury Background Halos */}
-      <View style={styles.backgroundDecoratorContainer} pointerEvents="none">
-        <View style={styles.haloOuter} />
-        <View style={styles.haloInner} />
-        <View style={styles.goldLineLeft} />
-        <View style={styles.goldLineRight} />
-      </View>
+       <LuxuryBackground/>
 
       <View style={styles.content}>
         {/* Top Section: Logo & Branding */}
-        <View style={styles.logoContainer}>
+        <Animated.View
+          entering={FadeInDown.duration(650)}
+          style={styles.logoContainer}
+        >
           <View style={styles.logoBadge}>
-            <Crown size={22} color="#D4AF37" strokeWidth={1.5} />
+            <Crown size={22} color={colors.gold} strokeWidth={1.5} />
           </View>
           <Text style={styles.logoText}>SALONPRO</Text>
           <Text style={styles.logoMotto}>EST. 2026</Text>
-        </View>
+        </Animated.View>
 
         {/* Center Section: Hero Statement */}
-        <View style={styles.heroContainer}>
+        <Animated.View
+          entering={FadeInUp.delay(120).duration(700)}
+          style={styles.heroContainer}
+        >
           <View style={styles.accentOrnament}>
             <View style={styles.ornamentLine} />
-            <Sparkles size={14} color="#D4AF37" style={styles.ornamentIcon} />
+            <Sparkles size={14} color={colors.gold} style={styles.ornamentIcon} />
             <View style={styles.ornamentLine} />
           </View>
 
@@ -70,10 +74,13 @@ export default function WelcomeScreen({ onGetStarted, onSignIn }: WelcomeScreenP
           <Text style={styles.subtitle}>
             Book premium salon services in just a few taps.
           </Text>
-        </View>
+        </Animated.View>
 
         {/* Bottom Section: Call to Actions */}
-        <View style={styles.actionContainer}>
+        <Animated.View
+          entering={FadeInUp.delay(240).duration(700)}
+          style={styles.actionContainer}
+        >
           <TouchableOpacity
             onPress={handleGetStarted}
             activeOpacity={0.8}
@@ -94,13 +101,13 @@ export default function WelcomeScreen({ onGetStarted, onSignIn }: WelcomeScreenP
               Already have an account? <Text style={styles.signInHighlight}>Sign In</Text>
             </Text>
           </TouchableOpacity>
-        </View>
+        </Animated.View>
 
         {/* Fine Print Footer */}
         <View style={styles.footer}>
-          <Scissors size={10} color="#52525B" />
+          <Scissors size={10} color={colors.cocoaMuted} />
           <Text style={styles.footerText}>EXPERIENCE PRESTIGE GROOMING</Text>
-          <Scissors size={10} color="#52525B" />
+          <Scissors size={10} color={colors.cocoaMuted} />
         </View>
       </View>
     </SafeAreaView>
@@ -110,14 +117,14 @@ export default function WelcomeScreen({ onGetStarted, onSignIn }: WelcomeScreenP
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#050505",
+    backgroundColor: colors.blush,
   },
   content: {
     flex: 1,
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 28,
-    paddingTop: Platform.OS === "android" ? 40 : 20,
+    paddingTop:0,
     paddingBottom: 24,
     zIndex: 10,
   },
@@ -162,33 +169,40 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     alignItems: "center",
-    marginTop: 16,
+   
+    paddingHorizontal: 22,
+    paddingVertical: 18,
+    borderRadius: 30,
+    backgroundColor: colors.ivoryGlass,
+    borderWidth: 1,
+    borderColor: colors.whiteGlass,
+    ...theme.shadows.glass,
   },
   logoBadge: {
     width: 50,
     height: 50,
     borderRadius: 25,
     borderWidth: 1,
-    borderColor: "rgba(212, 175, 55, 0.35)",
-    backgroundColor: "rgba(212, 175, 55, 0.05)",
+    borderColor: colors.lineStrong,
+    backgroundColor: colors.cream,
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 12,
-    shadowColor: "#D4AF37",
+    shadowColor: colors.shadow,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 10,
     elevation: 3,
   },
   logoText: {
-    color: "#FFFFFF",
+    color: colors.ink,
     fontSize: 16,
     fontWeight: "700",
     letterSpacing: 4,
     textAlign: "center",
   },
   logoMotto: {
-    color: "#D4AF37",
+    color: colors.gold,
     fontSize: 9,
     fontWeight: "600",
     letterSpacing: 3,
@@ -199,6 +213,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     paddingHorizontal: 12,
+    paddingVertical: 42,
+    borderRadius: 38,
+    backgroundColor: colors.ivoryGlass,
+    borderWidth: 1,
+    borderColor: colors.whiteGlass,
+    ...theme.shadows.glass,
   },
   accentOrnament: {
     flexDirection: "row",
@@ -210,13 +230,13 @@ const styles = StyleSheet.create({
   ornamentLine: {
     flex: 1,
     height: 1,
-    backgroundColor: "rgba(212, 175, 55, 0.3)",
+    backgroundColor: "rgba(91, 56, 55, 0.24)",
   },
   ornamentIcon: {
     marginHorizontal: 8,
   },
   heading: {
-    color: "#FFFFFF",
+    color: colors.ink,
     fontSize: 38,
     fontWeight: "300",
     textAlign: "center",
@@ -225,7 +245,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   subtitle: {
-    color: "#A1A1AA",
+    color: colors.muted,
     fontSize: 14,
     lineHeight: 22,
     textAlign: "center",
@@ -241,21 +261,21 @@ const styles = StyleSheet.create({
   primaryButton: {
     width: "100%",
     height: 56,
-    backgroundColor: "#D4AF37",
+    backgroundColor: colors.cocoa,
     borderRadius: 28,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     paddingLeft: 28,
     paddingRight: 8,
-    shadowColor: "#D4AF37",
+    shadowColor: colors.cocoa,
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.35,
     shadowRadius: 16,
     elevation: 6,
   },
   primaryButtonText: {
-    color: "#050505",
+    color: colors.cream,
     fontSize: 16,
     fontWeight: "600",
     letterSpacing: 1,
@@ -264,7 +284,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: colors.cream,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -272,13 +292,13 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   secondaryButtonText: {
-    color: "#A1A1AA",
+    color: colors.cocoaSoft,
     fontSize: 13,
     fontWeight: "400",
     letterSpacing: 0.3,
   },
   signInHighlight: {
-    color: "#D4AF37",
+    color: colors.ink,
     fontWeight: "600",
   },
   footer: {
@@ -289,7 +309,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   footerText: {
-    color: "#52525B",
+    color: colors.cocoaMuted,
     fontSize: 9,
     fontWeight: "600",
     letterSpacing: 2,

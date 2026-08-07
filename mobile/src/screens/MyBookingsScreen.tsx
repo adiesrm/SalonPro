@@ -10,12 +10,15 @@ import {
   Platform,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { ArrowLeft } from "lucide-react-native";
+import { ArrowLeft, Calendar, Clock, Scissors, User } from "lucide-react-native";
+import Animated, { FadeInUp } from "react-native-reanimated";
 
+import LuxuryBackground from "../components/LuxuryBackground";
 import { auth } from "../config/firebase";
 import { getUserBookings } from "../services/firestoreService";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "../navigation/AppNavigator";
+import { colors, theme } from "../theme/theme";
 interface Booking {
   id: string;
   serviceName: string;
@@ -83,7 +86,8 @@ export default function MyBookingsScreen() {
   if (loading) {
     return (
       <SafeAreaView style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#000" />
+        <LuxuryBackground />
+        <ActivityIndicator size="large" color={colors.cocoa} />
         <Text style={styles.loadingText}>Loading bookings...</Text>
       </SafeAreaView>
     );
@@ -93,6 +97,7 @@ export default function MyBookingsScreen() {
   if (bookings.length === 0) {
     return (
       <SafeAreaView style={styles.centerContainer}>
+        <LuxuryBackground />
         <View style={styles.header}>
           <TouchableOpacity
             onPress={() => navigation.goBack()}
@@ -100,7 +105,7 @@ export default function MyBookingsScreen() {
             style={styles.backButton}
             accessibilityLabel="Back"
           >
-            <ArrowLeft size={22} color="#111827" strokeWidth={1.8} />
+            <ArrowLeft size={22} color={colors.cocoa} strokeWidth={1.8} />
           </TouchableOpacity>
           <Text style={styles.title}>My Bookings</Text>
           <View style={styles.backButtonSpacer} />
@@ -115,6 +120,7 @@ export default function MyBookingsScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <LuxuryBackground />
       <View style={styles.header}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
@@ -122,7 +128,7 @@ export default function MyBookingsScreen() {
           style={styles.backButton}
           accessibilityLabel="Back"
         >
-          <ArrowLeft size={22} color="#111827" strokeWidth={1.8} />
+          <ArrowLeft size={22} color={colors.cocoa} strokeWidth={1.8} />
         </TouchableOpacity>
         <Text style={styles.title}>My Bookings</Text>
         <View style={styles.backButtonSpacer} />
@@ -134,7 +140,10 @@ export default function MyBookingsScreen() {
         contentContainerStyle={styles.list}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
-          <View style={styles.card}>
+          <Animated.View
+            entering={FadeInUp.duration(600)}
+            style={styles.card}
+          >
             <Text style={styles.service}>
               {item.serviceName}
             </Text>
@@ -161,7 +170,7 @@ export default function MyBookingsScreen() {
             >
               Status: {formatStatus(item.status)}
             </Text>
-          </View>
+          </Animated.View>
         )}
       />
     </SafeAreaView>
@@ -171,14 +180,14 @@ export default function MyBookingsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F7F7F7",
+    backgroundColor: colors.blush,
     paddingHorizontal: 20,
     paddingTop: 10,
   },
 
   centerContainer: {
     flex: 1,
-    backgroundColor: "#F7F7F7",
+    backgroundColor: colors.blush,
     padding: 20,
   },
 
@@ -195,8 +204,8 @@ const styles = StyleSheet.create({
     height: 44,
     borderRadius: 22,
     borderWidth: 1,
-    borderColor: "rgba(0,0,0,0.1)",
-    backgroundColor: "rgba(0,0,0,0.04)",
+    borderColor: colors.whiteGlass,
+    backgroundColor: colors.ivoryGlass,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -208,19 +217,20 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "700",
-    color: "#111827",
+    color: colors.ink,
+    fontFamily: theme.typography.displayFont,
   },
 
   loadingText: {
     marginTop: 12,
     fontSize: 16,
-    color: "#6B7280",
+    color: colors.muted,
   },
 
   emptyText: {
     marginTop: 10,
     fontSize: 16,
-    color: "#6B7280",
+    color: colors.muted,
     textAlign: "center",
     lineHeight: 24,
   },
@@ -230,23 +240,29 @@ const styles = StyleSheet.create({
   },
 
   card: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 16,
+    backgroundColor: colors.ivoryGlassStrong,
+    borderRadius: 28,
+    borderWidth: 1,
+    borderColor: colors.whiteGlass,
     padding: 18,
     marginBottom: 16,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 14 },
+    shadowOpacity: 0.16,
+    shadowRadius: 22,
     elevation: 3,
   },
 
   service: {
     fontSize: 22,
     fontWeight: "700",
-    color: "#111827",
+    color: colors.ink,
     marginBottom: 12,
   },
 
   detail: {
     fontSize: 17,
-    color: "#374151",
+    color: colors.muted,
     marginBottom: 6,
   },
 

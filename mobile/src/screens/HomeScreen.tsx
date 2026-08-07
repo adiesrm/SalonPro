@@ -24,7 +24,11 @@ import {
   Crown,
   Bell,
 } from "lucide-react-native";
+import Animated, { FadeInUp } from "react-native-reanimated";
 
+import LuxuryBackground from "../components/LuxuryBackground";
+
+import { colors, theme } from "../theme/theme";
 import { getServices } from "../services/firestoreService";
 
 const { width, height } = Dimensions.get("window");
@@ -32,7 +36,18 @@ const { width, height } = Dimensions.get("window");
 interface HomeScreenProps {
   onNavigateToBookings?: () => void;
   onNavigateToProfile?: () => void;
-  onSelectService?: (serviceName: string) => void;
+  onSelectService?: (service: ServiceSelection | string) => void;
+}
+
+interface ServiceSelection {
+  id?: string;
+  name: string;
+  category: string;
+  price: string;
+  duration: string;
+  rating?: string;
+  description: string;
+  whatsIncluded: string[];
 }
 
 export default function HomeScreen({
@@ -43,7 +58,7 @@ export default function HomeScreen({
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<"home" | "bookings" | "profile">("home");
 
-  const [popularServices, setPopularServices] = useState<any[]>([]);
+  const [popularServices, setPopularServices] = useState<ServiceSelection[]>([]);
   useEffect(() => {
   loadServices();
 }, []);
@@ -68,11 +83,11 @@ const loadServices = async () => {
   // Mock data for popular services
  
 
-  const handleServiceSelect = (serviceName: string) => {
+  const handleServiceSelect = (service: ServiceSelection | string) => {
     if (onSelectService) {
-      onSelectService(serviceName);
+      onSelectService(service);
     } else {
-      console.log("Selected service:", serviceName);
+      console.log("Selected service:", service);
     }
   };
 
@@ -87,43 +102,43 @@ const loadServices = async () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
 
-      {/* Decorative Luxury Background Halos */}
-      <View style={styles.backgroundDecoratorContainer} pointerEvents="none">
-        <View style={styles.haloOuter} />
-        <View style={styles.haloInner} />
-        <View style={styles.goldLineLeft} />
-        <View style={styles.goldLineRight} />
-      </View>
+      <LuxuryBackground />
 
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
         {/* Header Block: Greeting and Notifications */}
-        <View style={styles.header}>
+        <Animated.View
+          entering={FadeInUp.duration(600)}
+          style={styles.header}
+        >
           <View>
             <Text style={styles.greetingText}>Good Evening,</Text>
             <Text style={styles.profileName}>Adi</Text>
           </View>
           <View style={styles.headerActions}>
             <TouchableOpacity style={styles.iconButton} activeOpacity={0.7}>
-              <Bell size={20} color="#FFFFFF" strokeWidth={1.5} />
+              <Bell size={20} color={colors.cocoa} strokeWidth={1.5} />
               <View style={styles.notificationDot} />
             </TouchableOpacity>
             <View style={styles.avatarBorder}>
               <View style={styles.avatarPlaceholder}>
-                <User size={18} color="#D4AF37" />
+                <User size={18} color={colors.gold} />
               </View>
             </View>
           </View>
-        </View>
+        </Animated.View>
 
         {/* Search Bar Block */}
-        <View style={styles.searchWrapper}>
+        <Animated.View
+          entering={FadeInUp.delay(80).duration(600)}
+          style={styles.searchWrapper}
+        >
           <View style={styles.searchContainer}>
-            <Search size={18} color="#52525B" style={styles.searchIcon} />
+            <Search size={18} color={colors.cocoaMuted} style={styles.searchIcon} />
             <TextInput
               style={styles.searchInput}
               placeholder="Search services..."
@@ -133,15 +148,18 @@ const loadServices = async () => {
               autoCapitalize="none"
             />
           </View>
-        </View>
+        </Animated.View>
 
         {/* Upcoming Appointment Card */}
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Upcoming Appointment</Text>
-          <Crown size={14} color="#D4AF37" strokeWidth={1.5} />
+          <Crown size={14} color={colors.gold} strokeWidth={1.5} />
         </View>
 
-        <View style={styles.appointmentCard}>
+        <Animated.View
+          entering={FadeInUp.delay(140).duration(650)}
+          style={styles.appointmentCard}
+        >
           <View style={styles.appointmentHeader}>
             <View>
               <Text style={styles.appointmentService}>Executive Haircut & Beard</Text>
@@ -156,15 +174,15 @@ const loadServices = async () => {
 
           <View style={styles.appointmentDetails}>
             <View style={styles.detailRow}>
-              <Calendar size={14} color="#D4AF37" style={styles.detailIcon} />
+              <Calendar size={14} color={colors.gold} style={styles.detailIcon} />
               <Text style={styles.detailText}>Today, July 5th</Text>
             </View>
             <View style={styles.detailRow}>
-              <Clock size={14} color="#D4AF37" style={styles.detailIcon} />
+              <Clock size={14} color={colors.gold} style={styles.detailIcon} />
               <Text style={styles.detailText}>18:30 - 19:30</Text>
             </View>
           </View>
-        </View>
+        </Animated.View>
 
         {/* Categories Horizontal Scroll */}
         <View style={styles.sectionHeader}>
@@ -187,7 +205,7 @@ const loadServices = async () => {
               onPress={() => handleServiceSelect(category.name)}
             >
               <View style={styles.categoryIconCircle}>
-                <Scissors size={20} color="#D4AF37" strokeWidth={1.5} />
+                <Scissors size={20} color={colors.gold} strokeWidth={1.5} />
               </View>
               <Text style={styles.categoryName}>{category.name}</Text>
               <Text style={styles.categoryCount}>{category.count}</Text>
@@ -198,7 +216,7 @@ const loadServices = async () => {
         {/* Popular Services Section */}
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Popular Rituals</Text>
-          <Sparkles size={14} color="#D4AF37" strokeWidth={1.5} />
+          <Sparkles size={14} color={colors.gold} strokeWidth={1.5} />
         </View>
 
         <View style={styles.popularList}>
@@ -207,7 +225,14 @@ const loadServices = async () => {
               key={service.id}
               style={styles.popularCard}
               activeOpacity={0.8}
-              onPress={() => handleServiceSelect(service.name)}
+              onPress={() => {
+  console.log(
+    "SERVICE PRESSED",
+    JSON.stringify(service, null, 2)
+  );
+
+  handleServiceSelect(service);
+}}
             >
               <View style={styles.popularCardContent}>
                 <View style={styles.popularCardLeft}>
@@ -215,7 +240,7 @@ const loadServices = async () => {
                   <Text style={styles.popularName}>{service.name}</Text>
                   <View style={styles.popularMetaRow}>
                     <View style={styles.ratingRow}>
-                      <Star size={12} color="#D4AF37" fill="#D4AF37" />
+                      <Star size={12} color={colors.gold} fill={colors.gold} />
                       <Text style={styles.popularRating}>{service.rating}</Text>
                     </View>
                     <Text style={styles.metaDivider}>•</Text>
@@ -225,7 +250,7 @@ const loadServices = async () => {
                 <View style={styles.popularCardRight}>
                   <Text style={styles.popularPrice}>{service.price}</Text>
                   <View style={styles.bookButtonCircle}>
-                    <ChevronRight size={14} color="#050505" strokeWidth={2.5} />
+                    <ChevronRight size={14} color={colors.cream} strokeWidth={2.5} />
                   </View>
                 </View>
               </View>
@@ -241,7 +266,7 @@ const loadServices = async () => {
           onPress={() => handleTabPress("home")}
           activeOpacity={0.7}
         >
-          <Home size={22} color={activeTab === "home" ? "#D4AF37" : "#52525B"} />
+          <Home size={22} color={activeTab === "home" ? colors.gold : colors.cocoaMuted} />
           <Text
             style={[
               styles.tabLabel,
@@ -257,7 +282,7 @@ const loadServices = async () => {
           onPress={() => handleTabPress("bookings")}
           activeOpacity={0.7}
         >
-          <Calendar size={22} color={activeTab === "bookings" ? "#D4AF37" : "#52525B"} />
+          <Calendar size={22} color={activeTab === "bookings" ? colors.gold : colors.cocoaMuted} />
           <Text
             style={[
               styles.tabLabel,
@@ -273,7 +298,7 @@ const loadServices = async () => {
           onPress={() => handleTabPress("profile")}
           activeOpacity={0.7}
         >
-          <User size={22} color={activeTab === "profile" ? "#D4AF37" : "#52525B"} />
+          <User size={22} color={activeTab === "profile" ? colors.gold : colors.cocoaMuted} />
           <Text
             style={[
               styles.tabLabel,
@@ -291,7 +316,7 @@ const loadServices = async () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#050505",
+    backgroundColor: colors.blush,
   },
   scrollContent: {
     paddingBottom: 110, // Generous padding to prevent bottom tab overlap
@@ -345,17 +370,17 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   greetingText: {
-    color: "#A1A1AA",
+    color: colors.cocoaSoft,
     fontSize: 14,
     fontWeight: "400",
     letterSpacing: 0.5,
   },
   profileName: {
-    color: "#FFFFFF",
+    color: colors.ink,
     fontSize: 28,
     fontWeight: "300",
     letterSpacing: -0.5,
-    fontFamily: Platform.OS === "ios" ? "Georgia" : "serif",
+    fontFamily: theme.typography.displayFont,
     fontStyle: "italic",
     marginTop: 2,
   },
@@ -369,8 +394,8 @@ const styles = StyleSheet.create({
     height: 44,
     borderRadius: 22,
     borderWidth: 1,
-    borderColor: "#27272A",
-    backgroundColor: "rgba(24, 24, 27, 0.5)",
+    borderColor: colors.whiteGlass,
+    backgroundColor: colors.ivoryGlass,
     alignItems: "center",
     justifyContent: "center",
     position: "relative",
@@ -382,14 +407,14 @@ const styles = StyleSheet.create({
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: "#D4AF37",
+    backgroundColor: colors.gold,
   },
   avatarBorder: {
     width: 44,
     height: 44,
     borderRadius: 22,
     borderWidth: 1,
-    borderColor: "rgba(212, 175, 55, 0.3)",
+    borderColor: colors.whiteGlass,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -397,7 +422,7 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 19,
-    backgroundColor: "rgba(212, 175, 55, 0.05)",
+    backgroundColor: colors.ivoryGlass,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -411,8 +436,8 @@ const styles = StyleSheet.create({
     height: 54,
     borderRadius: 27,
     borderWidth: 1,
-    borderColor: "#27272A",
-    backgroundColor: "rgba(24, 24, 27, 0.7)",
+    borderColor: colors.whiteGlass,
+    backgroundColor: colors.ivoryGlass,
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 20,
@@ -423,7 +448,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     height: "100%",
-    color: "#FFFFFF",
+    color: colors.ink,
     fontSize: 14,
     letterSpacing: 0.3,
   },
@@ -437,14 +462,14 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   sectionTitle: {
-    color: "#FFFFFF",
+    color: colors.ink,
     fontSize: 16,
     fontWeight: "600",
     letterSpacing: 1,
     textTransform: "uppercase",
   },
   viewAllText: {
-    color: "#D4AF37",
+    color: colors.cocoa,
     fontSize: 12,
     fontWeight: "500",
     letterSpacing: 0.3,
@@ -453,11 +478,11 @@ const styles = StyleSheet.create({
     marginHorizontal: 24,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: "rgba(212, 175, 55, 0.2)",
-    backgroundColor: "rgba(24, 24, 27, 0.85)",
+    borderColor: colors.whiteGlass,
+    backgroundColor: colors.ivoryGlassStrong,
     padding: 20,
     zIndex: 10,
-    shadowColor: "#D4AF37",
+    shadowColor: colors.shadow,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.08,
     shadowRadius: 12,
@@ -469,33 +494,33 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   appointmentService: {
-    color: "#FFFFFF",
+    color: colors.ink,
     fontSize: 16,
     fontWeight: "600",
     letterSpacing: 0.3,
   },
   appointmentBarber: {
-    color: "#A1A1AA",
+    color: colors.muted,
     fontSize: 12,
     marginTop: 4,
   },
   appointmentBadge: {
-    backgroundColor: "rgba(212, 175, 55, 0.1)",
+    backgroundColor: "rgba(205, 163, 90, 0.18)",
     borderWidth: 1,
-    borderColor: "rgba(212, 175, 55, 0.3)",
+    borderColor: "rgba(205, 163, 90, 0.32)",
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 12,
   },
   appointmentBadgeText: {
-    color: "#D4AF37",
+    color: colors.cocoa,
     fontSize: 9,
     fontWeight: "700",
     letterSpacing: 0.5,
   },
   appointmentDivider: {
     height: 1,
-    backgroundColor: "#27272A",
+    backgroundColor: colors.line,
     marginVertical: 16,
   },
   appointmentDetails: {
@@ -510,7 +535,7 @@ const styles = StyleSheet.create({
     marginRight: 6,
   },
   detailText: {
-    color: "#FFFFFF",
+    color: colors.ink,
     fontSize: 12,
     fontWeight: "500",
   },
@@ -524,8 +549,8 @@ const styles = StyleSheet.create({
     height: 140,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: "#27272A",
-    backgroundColor: "rgba(24, 24, 27, 0.6)",
+    borderColor: colors.whiteGlass,
+    backgroundColor: colors.ivoryGlass,
     alignItems: "center",
     justifyContent: "center",
     padding: 12,
@@ -535,22 +560,22 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: "rgba(212, 175, 55, 0.05)",
+    backgroundColor: "rgba(255, 255, 255, 0.38)",
     borderWidth: 1,
-    borderColor: "rgba(212, 175, 55, 0.15)",
+    borderColor: colors.line,
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 12,
   },
   categoryName: {
-    color: "#FFFFFF",
+    color: colors.ink,
     fontSize: 13,
     fontWeight: "600",
     textAlign: "center",
     letterSpacing: 0.2,
   },
   categoryCount: {
-    color: "#52525B",
+    color: colors.cocoaMuted,
     fontSize: 10,
     fontWeight: "500",
     marginTop: 4,
@@ -564,8 +589,8 @@ const styles = StyleSheet.create({
     width: "100%",
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: "#27272A",
-    backgroundColor: "rgba(24, 24, 27, 0.6)",
+    borderColor: colors.whiteGlass,
+    backgroundColor: colors.ivoryGlass,
     padding: 16,
   },
   popularCardContent: {
@@ -577,7 +602,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   popularCategory: {
-    color: "#D4AF37",
+    color: colors.gold,
     fontSize: 10,
     fontWeight: "600",
     textTransform: "uppercase",
@@ -585,7 +610,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   popularName: {
-    color: "#FFFFFF",
+    color: colors.ink,
     fontSize: 15,
     fontWeight: "600",
     letterSpacing: 0.2,
@@ -601,16 +626,16 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   popularRating: {
-    color: "#FFFFFF",
+    color: colors.ink,
     fontSize: 12,
     fontWeight: "600",
   },
   metaDivider: {
-    color: "#52525B",
+    color: colors.cocoaMuted,
     marginHorizontal: 8,
   },
   popularDuration: {
-    color: "#A1A1AA",
+    color: colors.muted,
     fontSize: 12,
   },
   popularCardRight: {
@@ -618,7 +643,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   popularPrice: {
-    color: "#FFFFFF",
+    color: colors.ink,
     fontSize: 16,
     fontWeight: "700",
   },
@@ -626,7 +651,7 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: "#D4AF37",
+    backgroundColor: colors.cocoa,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -638,14 +663,14 @@ const styles = StyleSheet.create({
     height: 72,
     borderRadius: 36,
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.08)",
-    backgroundColor: "rgba(10, 10, 10, 0.95)",
+    borderColor: colors.whiteGlass,
+    backgroundColor: colors.ivoryGlassStrong,
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
     paddingHorizontal: 12,
     zIndex: 100,
-    shadowColor: "#000000",
+    shadowColor: colors.shadow,
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.5,
     shadowRadius: 20,
@@ -658,13 +683,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   tabLabel: {
-    color: "#52525B",
+    color: colors.cocoaMuted,
     fontSize: 10,
     fontWeight: "600",
     marginTop: 4,
     letterSpacing: 0.5,
   },
   tabLabelActive: {
-    color: "#D4AF37",
+    color: colors.cocoa,
   },
 });
