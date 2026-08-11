@@ -3,8 +3,8 @@ import { initializeApp } from "firebase/app";
 import { initializeAuth, getReactNativePersistence } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-const firebaseConfig = {
 
+const firebaseConfig = {
   apiKey: "AIzaSyCqtXGSSLF-dJ-8C7GZbNTUKJFHo4u2dO4",
   authDomain: "salonpro-73b13.firebaseapp.com",
   projectId: "salonpro-73b13",
@@ -18,6 +18,7 @@ const app = initializeApp(firebaseConfig);
 const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(AsyncStorage),
 });
+
 const db = getFirestore(app);
 
 export { app, auth, db };

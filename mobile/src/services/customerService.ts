@@ -12,8 +12,6 @@ import {
 
 import { db } from '../config/firebase';
 
-const customersRef = collection(db, 'customers');
-
 interface CreateCustomerData {
   fullName: string;
   phone: string;
@@ -21,6 +19,7 @@ interface CreateCustomerData {
 }
 
 const normalizePhone = (phone: string) => phone.replace(/[\s-]/g, '');
+
 export interface Customer {
   id: string;
   fullName: string;
@@ -51,10 +50,8 @@ export async function createCustomer(data: CreateCustomerData): Promise<string> 
       fullName: data.fullName,
       phone,
       email: data.email,
-
       totalBookings: 1,
       isActive: true,
-
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
       lastVisit: serverTimestamp(),
@@ -89,6 +86,7 @@ export async function incrementCustomerBookings(customerId: string): Promise<voi
 export async function getCustomerByPhone(phone: string) {
   try {
     const normalizedPhone = normalizePhone(phone);
+    const customersRef = collection(db, 'customers');
     const q = query(customersRef, where('phone', '==', normalizedPhone));
 
     const snapshot = await getDocs(q);
@@ -97,27 +95,29 @@ export async function getCustomerByPhone(phone: string) {
       return null;
     }
 
-    const doc = snapshot.docs[0];
+    const docSnap = snapshot.docs[0];
 
     return {
-      id: doc.id,
-      ...doc.data(),
+      id: docSnap.id,
+      ...docSnap.data(),
     };
   } catch (error) {
     console.error('Error finding customer:', error);
     throw error;
   }
 }
+
 /**
  * Returns all customers
  */
 export async function getCustomers(): Promise<Customer[]> {
   try {
+    const customersRef = collection(db, 'customers');
     const snapshot = await getDocs(customersRef);
 
-    return snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...(doc.data() as Omit<Customer, 'id'>),
+    return snapshot.docs.map((docSnap) => ({
+      id: docSnap.id,
+      ...(docSnap.data() as Omit<Customer, 'id'>),
     }));
   } catch (error) {
     console.error('Error loading customers:', error);

@@ -32,37 +32,33 @@ export type RootStackParamList = {
   Register: undefined;
   Home: undefined;
   MyBookings: undefined;
-  Profile:undefined;
+  Profile: undefined;
   ServiceDetails: {
     service?: ServiceDetailsData;
   } | undefined;
   BarberSelection: {
-  service: ServiceDetailsData;
-};
-
-DateTimeSelection: {
-  service: ServiceDetailsData;
-  barber: {
-    id: string;
-    name: string;
-    role: string;
-    rating: string;
+    service: ServiceDetailsData;
   };
-};
-
-BookingConfirmation: {
-service: ServiceDetailsData;
-  barber: {
-    id: string;
-    name: string;
-    role: string;
-    rating: string;
+  DateTimeSelection: {
+    service: ServiceDetailsData;
+    barber: {
+      id: string;
+      name: string;
+      role: string;
+      rating: string;
+    };
   };
-  date: string;
-  time: string;
-  
-
-};
+  BookingConfirmation: {
+    service: ServiceDetailsData;
+    barber: {
+      id: string;
+      name: string;
+      role: string;
+      rating: string;
+    };
+    date: string;
+    time: string;
+  };
 };
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -87,9 +83,9 @@ interface BookingConfirmationRouteProps {
   navigation: NavigationProp;
   route: RouteProp<RootStackParamList, "BookingConfirmation">;
 }
+
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-// Premium Service details lookup based on user selection
 const getServiceDetails = (serviceName: string) => {
   switch (serviceName) {
     case "The Royal Grooming Ritual":
@@ -221,14 +217,12 @@ const normalizeServiceDetails = (
 export default function AppNavigator() {
   return (
     <Stack.Navigator
-    
       initialRouteName="Welcome"
       screenOptions={{
         headerShown: false,
         animation: "slide_from_right",
       }}
     >
-      
       <Stack.Screen name="Welcome">
         {({ navigation }: ScreenProps) => (
           <WelcomeScreen
@@ -264,101 +258,86 @@ export default function AppNavigator() {
       </Stack.Screen>
       <Stack.Screen name="Home">
         {({ navigation }: ScreenProps) => (
-         <HomeScreen
-  onNavigateToBookings={() => {
-    navigation.navigate("MyBookings");
-  }}
-  onNavigateToProfile={() => {
-    navigation.navigate("Profile");
-  }}
-  onSelectService={(service) => {
-    console.log("NAV RECEIVED", service);
-
-    const details = normalizeServiceDetails(service);
-
-    console.log("NORMALIZED", details);
-
-    navigation.navigate(
-      "ServiceDetails",
-      details ? { service: details } : undefined
-    );
-  }}
-/>
+          <HomeScreen
+            onNavigateToBookings={() => {
+              navigation.navigate("MyBookings");
+            }}
+            onNavigateToProfile={() => {
+              navigation.navigate("Profile");
+            }}
+            onSelectService={(service) => {
+              const details = normalizeServiceDetails(service);
+              navigation.navigate(
+                "ServiceDetails",
+                details ? { service: details } : undefined
+              );
+            }}
+          />
         )}
-
       </Stack.Screen>
       <Stack.Screen name="ServiceDetails">
         {({ navigation, route }: ServiceDetailsRouteProps) => (
-          
           <ServiceDetailsScreen
             onBack={() => navigation.goBack()}
             onBookNow={() => {
-  if (route.params?.service) {
-    navigation.navigate("BarberSelection", {
-      service: route.params.service,
-    });
-  }
-}}
+              if (route.params?.service) {
+                navigation.navigate("BarberSelection", {
+                  service: route.params.service,
+                });
+              }
+            }}
             service={route.params?.service}
           />
         )}
       </Stack.Screen>
-  <Stack.Screen name="BarberSelection">
-  {({ navigation, route }: BarberSelectionRouteProps) => (
-    <BarberSelectionScreen
-      service={route.params.service}
-      onBack={() => navigation.goBack()}
-      onContinue={(selectedBarber) => {
-  navigation.navigate("DateTimeSelection", {
-    service: route.params.service,
-    barber: selectedBarber,
-  });
-}}
-/>
-  )}
-</Stack.Screen>
+      <Stack.Screen name="BarberSelection">
+        {({ navigation, route }: BarberSelectionRouteProps) => (
+          <BarberSelectionScreen
+            service={route.params.service}
+            onBack={() => navigation.goBack()}
+            onContinue={(selectedBarber) => {
+              navigation.navigate("DateTimeSelection", {
+                service: route.params.service,
+                barber: selectedBarber,
+              });
+            }}
+          />
+        )}
+      </Stack.Screen>
       <Stack.Screen name="DateTimeSelection">
-  {({ navigation, route }: DateTimeSelectionRouteProps) => (
-    <DateTimeSelectionScreen
-      onBack={() => navigation.goBack()}
-      service={route.params.service}
-      barber={route.params.barber}
-      onConfirmBooking={(selectedDate, selectedTime) => {
-        navigation.navigate("BookingConfirmation", {
-          service: route.params.service,
-          barber: route.params.barber,
-          date: selectedDate,
-          time: selectedTime,
-        });
-      }}
-    />
-  )}
-</Stack.Screen>
-
-<Stack.Screen name="BookingConfirmation">
-  {({ navigation, route }: BookingConfirmationRouteProps) => (
-    <BookingConfirmationScreen
-      onReturnHome={() => {
-        navigation.navigate("Home");
-      }}
-      bookingDetails={{
-  service: route.params.service,
-  barber: route.params.barber,
-  date: route.params.date,
-  time: route.params.time,
-}}
-    />
-  )}
-  </Stack.Screen>
-  <Stack.Screen
-  name="MyBookings"
-  component={MyBookingsScreen}
-/>
-<Stack.Screen
-  name="Profile"
-  component={ProfileScreen}
-/>
+        {({ navigation, route }: DateTimeSelectionRouteProps) => (
+          <DateTimeSelectionScreen
+            onBack={() => navigation.goBack()}
+            service={route.params.service}
+            barber={route.params.barber}
+            onConfirmBooking={(selectedDate, selectedTime) => {
+              navigation.navigate("BookingConfirmation", {
+                service: route.params.service,
+                barber: route.params.barber,
+                date: selectedDate,
+                time: selectedTime,
+              });
+            }}
+          />
+        )}
+      </Stack.Screen>
+      <Stack.Screen name="BookingConfirmation">
+        {({ navigation, route }: BookingConfirmationRouteProps) => (
+          <BookingConfirmationScreen
+            onReturnHome={() => {
+              navigation.navigate("Home");
+            }}
+            bookingDetails={{
+              service: route.params.service,
+              barber: route.params.barber,
+              date: route.params.date,
+              time: route.params.time,
+            }}
+          />
+        )}
+      </Stack.Screen>
+      <Stack.Screen name="MyBookings" component={MyBookingsScreen} />
+      <Stack.Screen name="Profile" component={ProfileScreen} />
     </Stack.Navigator>
-    
   );
 }

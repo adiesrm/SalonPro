@@ -10,7 +10,10 @@ import {
   Platform,
 } from "react-native";
 import { Scissors, Sparkles, ChevronRight, Crown } from "lucide-react-native";
-import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
+import Animated, {
+  FadeInDown,
+  FadeInUp,
+} from "react-native-reanimated";
 
 import LuxuryBackground from "../components/LuxuryBackground";
 import { colors, theme } from "../theme/theme";
@@ -22,7 +25,10 @@ interface WelcomeScreenProps {
   onSignIn?: () => void;
 }
 
-export default function WelcomeScreen({ onGetStarted, onSignIn }: WelcomeScreenProps) {
+export default function WelcomeScreen({
+  onGetStarted,
+  onSignIn,
+}: WelcomeScreenProps) {
   const handleGetStarted = () => {
     if (onGetStarted) {
       onGetStarted();
@@ -43,7 +49,7 @@ export default function WelcomeScreen({ onGetStarted, onSignIn }: WelcomeScreenP
     <SafeAreaView style={styles.container}>
       <StatusBar style="dark" />
 
-       <LuxuryBackground/>
+      <LuxuryBackground />
 
       <View style={styles.content}>
         {/* Top Section: Logo & Branding */}
@@ -52,8 +58,13 @@ export default function WelcomeScreen({ onGetStarted, onSignIn }: WelcomeScreenP
           style={styles.logoContainer}
         >
           <View style={styles.logoBadge}>
-            <Crown size={22} color={colors.gold} strokeWidth={1.5} />
+            <Crown
+              size={22}
+              color={colors.gold}
+              strokeWidth={1.5}
+            />
           </View>
+
           <Text style={styles.logoText}>SALONPRO</Text>
           <Text style={styles.logoMotto}>EST. 2026</Text>
         </Animated.View>
@@ -65,12 +76,18 @@ export default function WelcomeScreen({ onGetStarted, onSignIn }: WelcomeScreenP
         >
           <View style={styles.accentOrnament}>
             <View style={styles.ornamentLine} />
-            <Sparkles size={14} color={colors.gold} style={styles.ornamentIcon} />
+            <Sparkles
+              size={14}
+              color={colors.gold}
+              style={styles.ornamentIcon}
+            />
             <View style={styles.ornamentLine} />
           </View>
 
-          <Text style={styles.heading}>Beauty{"\n"}Begins Here</Text>
-          
+          <Text style={styles.heading}>
+            Beauty{"\n"}Begins Here
+          </Text>
+
           <Text style={styles.subtitle}>
             Book premium salon services in just a few taps.
           </Text>
@@ -86,9 +103,16 @@ export default function WelcomeScreen({ onGetStarted, onSignIn }: WelcomeScreenP
             activeOpacity={0.8}
             style={styles.primaryButton}
           >
-            <Text style={styles.primaryButtonText}>Get Started</Text>
+            <Text style={styles.primaryButtonText}>
+              Get Started
+            </Text>
+
             <View style={styles.buttonIconCircle}>
-              <ChevronRight size={16} color="#000000" strokeWidth={2.5} />
+              <ChevronRight
+                size={16}
+                color="#000000"
+                strokeWidth={2.5}
+              />
             </View>
           </TouchableOpacity>
 
@@ -98,16 +122,27 @@ export default function WelcomeScreen({ onGetStarted, onSignIn }: WelcomeScreenP
             style={styles.secondaryButton}
           >
             <Text style={styles.secondaryButtonText}>
-              Already have an account? <Text style={styles.signInHighlight}>Sign In</Text>
+              Already have an account?{" "}
+              <Text style={styles.signInHighlight}>
+                Sign In
+              </Text>
             </Text>
           </TouchableOpacity>
         </Animated.View>
 
         {/* Fine Print Footer */}
         <View style={styles.footer}>
-          <Scissors size={10} color={colors.cocoaMuted} />
-          <Text style={styles.footerText}>EXPERIENCE PRESTIGE GROOMING</Text>
-          <Scissors size={10} color={colors.cocoaMuted} />
+          <Scissors
+            size={10}
+            color={colors.cocoaMuted}
+          />
+          <Text style={styles.footerText}>
+            EXPERIENCE PRESTIGE GROOMING
+          </Text>
+          <Scissors
+            size={10}
+            color={colors.cocoaMuted}
+          />
         </View>
       </View>
     </SafeAreaView>
@@ -124,7 +159,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 28,
-    paddingTop:0,
+    paddingTop: 0,
     paddingBottom: 24,
     zIndex: 10,
   },
@@ -169,7 +204,7 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     alignItems: "center",
-   
+
     paddingHorizontal: 22,
     paddingVertical: 18,
     borderRadius: 30,
