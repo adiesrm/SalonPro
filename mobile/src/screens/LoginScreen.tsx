@@ -81,19 +81,21 @@ export default function LoginScreen({ onBack, onSignIn, onCreateAccount }: Login
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <StatusBar style="dark" />
 
       <LuxuryBackground />
 
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
         style={styles.keyboardView}
       >
         <ScrollView
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="always"
+          keyboardShouldPersistTaps="handled"
+          automaticallyAdjustKeyboardInsets={false}
         >
             {/* Header: Back Button & Logo Title */}
             <Animated.View
@@ -243,7 +245,7 @@ export default function LoginScreen({ onBack, onSignIn, onCreateAccount }: Login
             </Animated.View>
         </ScrollView>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -257,9 +259,8 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    justifyContent: "space-between",
     paddingHorizontal: 28,
-    paddingTop: Platform.OS === "android" ? 40 : 20,
+    paddingTop: Platform.OS === "ios" ? 54 : 40,
     paddingBottom: 36,
     zIndex: 10,
   },
@@ -408,11 +409,7 @@ const styles = StyleSheet.create({
   },
   inputContainerFocused: {
     borderColor: colors.gold,
-    backgroundColor: "rgba(255, 250, 244, 0.72)",
-    shadowColor: colors.gold,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
+    backgroundColor: "rgba(255, 250, 244, 0.85)",
   },
   inputIcon: {
     marginRight: 12,
@@ -431,7 +428,7 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     gap: 16,
-    marginTop: "auto",
+    marginTop: 24,
   },
   primaryButton: {
     width: "100%",

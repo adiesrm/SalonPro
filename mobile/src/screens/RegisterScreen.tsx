@@ -145,21 +145,22 @@ export default function RegisterScreen({
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <StatusBar style="dark" />
 
       <LuxuryBackground />
 
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
         style={styles.keyboardView}
       >
-        
-          <ScrollView
-            contentContainerStyle={styles.scrollContent}
-            showsVerticalScrollIndicator={false}
-            keyboardShouldPersistTaps="handled"
-          >
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+          automaticallyAdjustKeyboardInsets={false}
+        >
             <Animated.View
               entering={FadeInDown.duration(600)}
               style={styles.header}
@@ -383,7 +384,7 @@ export default function RegisterScreen({
             </View>
           </ScrollView>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -392,9 +393,8 @@ const styles = StyleSheet.create({
   keyboardView: { flex: 1 },
   scrollContent: {
     flexGrow: 1,
-    justifyContent: 'space-between',
     paddingHorizontal: 28,
-    paddingTop: Platform.OS === 'android' ? 40 : 20,
+    paddingTop: Platform.OS === 'ios' ? 54 : 40,
     paddingBottom: 36,
     zIndex: 10,
   },
@@ -421,11 +421,11 @@ const styles = StyleSheet.create({
   inputWrapper: { width: '100%', gap: 8 },
   inputLabel: { color: colors.cocoaSoft, fontSize: 12, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 1.5 },
   inputContainer: { width: '100%', height: 56, borderRadius: 12, borderWidth: 1, borderColor: colors.line, backgroundColor: 'rgba(255, 255, 255, 0.36)', flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 },
-  inputContainerFocused: { borderColor: colors.gold, backgroundColor: 'rgba(255, 250, 244, 0.72)', shadowColor: colors.gold, shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.12, shadowRadius: 6 },
+  inputContainerFocused: { borderColor: colors.gold, backgroundColor: 'rgba(255, 250, 244, 0.85)' },
   inputIcon: { marginRight: 12 },
   textInput: { flex: 1, height: '100%', color: colors.ink, fontSize: 14, letterSpacing: 0.3 },
   visibilityButton: { padding: 4 },
-  actionContainer: { width: '100%', alignItems: 'center', gap: 16, marginTop: 'auto' },
+  actionContainer: { width: '100%', alignItems: 'center', gap: 16, marginTop: 24 },
   primaryButton: { width: '100%', height: 56, backgroundColor: colors.cocoa, borderRadius: 28, alignItems: 'center', justifyContent: 'center', shadowColor: colors.cocoa, shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.28, shadowRadius: 16, elevation: 6 },
   primaryButtonText: { color: colors.cream, fontSize: 16, fontWeight: '600', letterSpacing: 1 },
   secondaryButton: { paddingVertical: 12 },
